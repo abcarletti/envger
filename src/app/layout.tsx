@@ -4,7 +4,6 @@ import "./globals.css";
 
 const inter = Ubuntu({
   weight: ['400', '500', '700'],
-  display: "swap",
   subsets: ["latin"],
 });
 
