@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Ubuntu } from "next/font/google";
+import { ThemeProvider } from "@/components/theme-provider"
+
 import "./globals.css";
+import { Header } from "@/components/header";
 
 const inter = Ubuntu({
   weight: ['400', '500', '700'],
@@ -19,7 +22,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Header />
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

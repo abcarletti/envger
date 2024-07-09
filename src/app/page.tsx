@@ -6,7 +6,7 @@ import Image from "next/image";
 export default async function Home() {
   const session = await auth();
   return (
-    <main className="">
+    <main className="pt-16">
       {session ? <>
         <p>NAME: {session.user?.name}</p>
         <p>EMAIL: {session.user?.email}</p>
