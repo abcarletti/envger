@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css";
 import { Header } from "@/components/header";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Ubuntu({
   weight: ['400', '500', '700'],
@@ -33,6 +34,7 @@ export default function RootLayout({
           <Header />
           {children}
           <SpeedInsights />
+          <Analytics />
         </ThemeProvider>
       </body>
     </html>
