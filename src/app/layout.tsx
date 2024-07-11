@@ -22,21 +22,21 @@ export default function RootLayout({
 }: Readonly<{
 	children: React.ReactNode
 }>) {
-	return (
-		<html lang="es">
-			<body className={inter.className}>
-				<ThemeProvider
-					attribute="class"
-					defaultTheme="system"
-					enableSystem
-					disableTransitionOnChange
-				>
-					<Header />
-					{children}
-					<SpeedInsights />
-					<Analytics />
-				</ThemeProvider>
-			</body>
-		</html>
-	)
+  return (
+    <html lang="es">
+      <body className={inter.className + 'h-dvh max-h-dvh overflow-hidden'}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Header />
+          {children}
+          <SpeedInsights />
+          <Analytics />
+        </ThemeProvider>
+      </body>
+    </html>
+  );
 }

@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Provider {
+  GITHUB
+  CREDENTIALS
+}
+
+enum Env {
+  DEV
+  PRE
+  PRO
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+model User {
+  id           String    @id @default(cuid())
+  provider     Provider  @default(CREDENTIALS)
+  username     String?
+  password     String?
+  completeName String?   @map("complete_name")
+  avatar       String?
+  email        String    @unique
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  Project      Project[]
+
+  @@index([provider, username], name: "provider_username")
+  @@index([provider, email], name: "provider_email")
+  @@map("users")
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String   @map("user_id")
+  imageUrl    String?  @map("image_url")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  Group       Group[]
+
+  @@index([userId], name: "user_id")
+  @@index([name], name: "project_name")
+  @@index([name, userId], name: "name_user_id")
+  @@map("projects")
+}
+
+model Group {
+  id          String   @id @default(cuid())
+  project     Project  @relation(fields: [projectId], references: [id])
+  projectId   String   @map("project_id")
+  name        String
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  KV          KV[]
+
+  @@index([projectId], name: "project_id")
+  @@index([name], name: "group_name")
+  @@map("groups")
+}
+
+model KV {
+  id        String   @id @default(cuid())
+  group     Group    @relation(fields: [groupId], references: [id])
+  groupId   String   @map("group_id")
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([groupId], name: "group_id")
+  @@map("kvs")
+}

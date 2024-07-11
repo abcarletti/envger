@@ -1,27 +1,15 @@
-import { SignIn } from '@/components/login-page'
-import { SignOut } from '@/components/signout-button'
-import { auth } from '@/lib/auth'
-import Image from 'next/image'
+import { LoginPage } from "@/components/login-page";
+import { SignOut } from "@/components/signout-button";
+import { auth } from "@/lib/auth";
 
 export default async function Home() {
-	const session = await auth()
-	return (
-		<main className="pt-16">
-			{session ? (
-				<>
-					<p>NAME: {session.user?.name}</p>
-					<p>EMAIL: {session.user?.email}</p>
-					<Image
-						src={session.user?.image || '/images/placeholder.jpg'}
-						alt="profile picture"
-						width={100}
-						height={100}
-					/>
-					<SignOut />
-				</>
-			) : (
-				<SignIn />
-			)}
-		</main>
-	)
+  const session = await auth();
+  console.log('session', session);
+  return (
+    <main className="pt-32">
+      {session ? <>
+        <SignOut />
+      </> : <LoginPage />}
+    </main>
+  );
 }
