@@ -14,9 +14,8 @@ enum Env {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL") // uses connection pooling
 }
 
 model User {
@@ -26,7 +25,7 @@ model User {
   password     String?
   completeName String?   @map("complete_name")
   avatar       String?
-  email        String    @unique
+  email        String?
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime  @updatedAt @map("updated_at")
   Project      Project[]
@@ -39,14 +38,17 @@ model User {
 model Project {
   id          String   @id @default(cuid())
   name        String
+  slug        String
   description String?
   user        User     @relation(fields: [userId], references: [id])
   userId      String   @map("user_id")
   imageUrl    String?  @map("image_url")
+  favorite    Boolean  @default(false)
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
   Group       Group[]
 
+  @@unique([slug, userId], name: "slug_user_id")
   @@index([userId], name: "user_id")
   @@index([name], name: "project_name")
   @@index([name, userId], name: "name_user_id")
