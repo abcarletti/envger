@@ -22,13 +22,16 @@ export default async function AvatarStatus() {
 			<DropdownMenuTrigger asChild>
 				<Button variant="secondary" size="icon" className="rounded-full">
 					{session?.user?.image ? (
-						<Image
-							className="rounded-full"
-							src={session?.user?.image}
-							width={40}
-							height={40}
-							alt="User avatar"
-						/>
+						<div className="relative">
+							<Image
+								className="rounded-full"
+								src={session?.user?.image}
+								width={40}
+								height={40}
+								alt="User avatar"
+							/>
+							<span className="top-0 left-7 absolute size-3 bg-primary border-2 border-white dark:border-gray-800 rounded-full"></span>
+						</div>
 					) : (
 						<CircleUser className="size-5" />
 					)}

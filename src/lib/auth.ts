@@ -67,23 +67,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 	},
 	callbacks: {
 		authorized: async ({ auth, request }) => {
-			console.log('authorized', auth)
 			if (request.url.match(/\/dashboard\/*/)) {
 				return !!auth
 			}
 			return true
 		},
-		jwt: async ({ token, user, account, profile, session, trigger }) => {
+		jwt: async ({ token, user, account, profile, trigger }) => {
 			if (trigger === 'signIn') {
-				console.log('provider', account?.provider)
-				console.log('username', profile?.login)
-				console.log('name', profile?.name)
-				console.log('email', profile?.email)
-				console.log('avatar', profile?.avatar_url)
-				console.log('profile', profile)
-				console.log('user', user)
-				console.log('session', session)
-
 				if (account?.provider === 'github') {
 					let user = await prisma.user.findFirst({
 						where: {
