@@ -1,4 +1,5 @@
 import prisma from '@/clients/prisma'
+import { Provider } from '@prisma/client'
 import * as bcrypt from 'bcryptjs'
 import NextAuth, { DefaultSession } from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
@@ -84,11 +85,30 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 				console.log('session', session)
 
 				if (account?.provider === 'github') {
+					let user = await prisma.user.findFirst({
+						where: {
+							provider: Provider.GITHUB,
+							username: <string>profile?.login,
+						},
+					})
+					if (!user) {
+						user = await prisma.user.create({
+							data: {
+								provider: Provider.GITHUB,
+								username: <string>profile?.login,
+								completeName: <string>profile?.name,
+								email: <string>profile?.email,
+								avatar: <string>profile?.avatar_url,
+							},
+						})
+					}
+					token.id = user.id
 					token.avatar = profile?.avatar_url
 					token.username = profile?.login
 					token.name = profile?.name
 					token.email = profile?.email
 				} else {
+					token.id = user?.id
 					token.username = user?.username
 					token.name = user?.username
 					token.email = user?.email
@@ -97,6 +117,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 			return token
 		},
 		session: async ({ session, token }) => {
+			session.user.id = <string>token.id
 			session.user.name = token.name
 			session.user.email = token.email || ''
 			return session
