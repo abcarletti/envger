@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
-import { Ubuntu } from 'next/font/google'
+import { IBM_Plex_Mono } from 'next/font/google'
 
-import './globals.css'
-import { ThemeProvider } from '@/providers/theme-provider'
 import { Toaster } from '@/components/ui/sonner'
+import { ThemeProvider } from '@/providers/theme-provider'
+import QueryProvider from '../providers/tanstack-query'
+import './globals.css'
 
-const inter = Ubuntu({
+const ibm = IBM_Plex_Mono({
 	weight: ['400', '500', '700'],
 	subsets: ['latin'],
 })
@@ -22,14 +23,14 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="es">
-			<body className={inter.className}>
+			<body className={ibm.className}>
 				<ThemeProvider
 					attribute="class"
 					defaultTheme="system"
 					enableSystem
 					disableTransitionOnChange
 				>
-					{children}
+					<QueryProvider>{children}</QueryProvider>
 					<Toaster />
 				</ThemeProvider>
 			</body>
