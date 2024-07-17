@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { IBM_Plex_Mono } from 'next/font/google'
 
 import { Toaster } from '@/components/ui/sonner'
+import { ProjectStoreProvider } from '@/providers/project-store-provider'
 import { ThemeProvider } from '@/providers/theme-provider'
 import QueryProvider from '../providers/tanstack-query'
 import './globals.css'
@@ -30,7 +31,9 @@ export default function RootLayout({
 					enableSystem
 					disableTransitionOnChange
 				>
-					<QueryProvider>{children}</QueryProvider>
+					<ProjectStoreProvider>
+						<QueryProvider>{children}</QueryProvider>
+					</ProjectStoreProvider>
 					<Toaster />
 				</ThemeProvider>
 			</body>

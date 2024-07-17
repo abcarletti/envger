@@ -12,6 +12,7 @@ import {
 	SelectValue,
 } from '@/components/ui/select'
 import { PROJECTS_SELECTOR_KEY } from '@/lib/constants'
+import { useProjectStore } from '@/providers/project-store-provider'
 import { Project } from '@prisma/client'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -34,6 +35,8 @@ export default function ProjectSelector() {
 		() => getSelectorProjects(),
 	)
 
+	const { updateSlugContext } = useProjectStore((store) => store)
+
 	return (
 		<>
 			{isLoading && <Skeleton className="bg-primary/80 min-w-56 h-9" />}
@@ -52,6 +55,7 @@ export default function ProjectSelector() {
 					onValueChange={(value) => {
 						push(`/dashboard/${value}`)
 						setSlugPath(value)
+						updateSlugContext(value)
 					}}
 					value={slugPath}
 				>

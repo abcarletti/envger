@@ -8,7 +8,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
-import { PROJECT_KEY } from '@/lib/constants'
+import { PROJECT_KEY, PROJECTS_SELECTOR_KEY } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { queryClient } from '@/providers/tanstack-query'
 import { Star } from 'lucide-react'
@@ -31,6 +31,9 @@ export default function ProjectPage({
 		setFavoriteProject(slug, !project.favorite)
 		queryClient.invalidateQueries({
 			queryKey: [...PROJECT_KEY, slug],
+		})
+		queryClient.invalidateQueries({
+			queryKey: PROJECTS_SELECTOR_KEY,
 		})
 	}
 
