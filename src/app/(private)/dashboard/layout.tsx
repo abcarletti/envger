@@ -1,25 +1,17 @@
+import AvatarStatus from '@/components/avatar-status'
+import CreateProjectButton from '@/components/create-project-buttom'
+import ProjectSelector from '@/components/project-selector'
+import { SidebarDesktop } from '@/components/sidebar-desktop'
 import { Button } from '@/components/ui/button'
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Home, Menu } from 'lucide-react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-
-import AvatarStatus from '@/components/avatar-status'
-import CreateDashboardButton from '@/components/create-dashboard-buttom'
-import ProjectSelector from '@/components/project-selector'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Suspense } from 'react'
-
-import { cn } from '@/lib/utils'
-import { Comfortaa } from 'next/font/google'
 
 export const metadata: Metadata = {
 	title: 'Guard notes - Dashboard',
 }
-
-const titleFont = Comfortaa({
-	weight: ['400', '700'],
-	subsets: ['latin'],
-})
 
 export default function RootLayout({
 	children,
@@ -28,44 +20,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<div className="flex min-h-screen max-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] overflow-hidden">
-			<div className="hidden border-r bg-muted/40 md:block">
-				<div className="flex h-full max-h-screen flex-col gap-2">
-					<div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-						<Link
-							href="/dashboard"
-							className="flex items-center gap-2 font-semibold"
-						>
-							<h1
-								className={cn(
-									'px-2 text-secondary-foreground text-xl font-bold',
-									titleFont.className,
-								)}
-							>
-								<span className="text-primary text-2xl">{'<'}</span>
-								SecretNotes
-								<span className="text-primary"> {'/>'}</span>
-							</h1>
-						</Link>
-					</div>
-					<div className="flex flex-col flex-1 px-2 pb-2 justify-between">
-						<nav className="grid items-start px-2 text-sm font-medium">
-							<Link
-								href="#"
-								className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-							>
-								<Home className="h-4 w-4" />
-								Dashboard
-							</Link>
-						</nav>
-						<Button
-							size={'sm'}
-							className="w-full bg-primary text-primary-foreground"
-						>
-							Añadir grupo
-						</Button>
-					</div>
-				</div>
-			</div>
+			<SidebarDesktop />
 			<div className="flex flex-col flex-1">
 				<header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
 					<Sheet>
@@ -105,7 +60,7 @@ export default function RootLayout({
 						<Suspense fallback={<div>Loading...</div>}>
 							<ProjectSelector />
 						</Suspense>
-						<CreateDashboardButton />
+						<CreateProjectButton />
 					</div>
 					<AvatarStatus />
 				</header>

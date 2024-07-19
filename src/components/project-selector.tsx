@@ -15,18 +15,22 @@ import { PROJECTS_SELECTOR_KEY } from '@/lib/constants'
 import { useProjectStore } from '@/providers/project-store-provider'
 import { Project } from '@prisma/client'
 import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Button } from './ui/button'
 import { Skeleton } from './ui/skeleton'
 
 export default function ProjectSelector() {
 	const { push } = useRouter()
 	const pathname = usePathname()
-	const [slugPath, setSlugPath] = useState<string | undefined>(undefined)
 
 	useEffect(() => {
-		if (pathname.includes('/dashboard/')) {
-			setSlugPath(pathname.split('/dashboard/')[1])
+		if (pathname.includes('/dashboard')) {
+			const slug = pathname.split('/dashboard/')[1]
+			if (slug && slug != 'create') {
+				updateSlugContext(slug)
+			} else {
+				updateSlugContext('')
+			}
 		}
 	}, [pathname])
 
@@ -35,17 +39,17 @@ export default function ProjectSelector() {
 		() => getSelectorProjects(),
 	)
 
-	const { updateSlugContext } = useProjectStore((store) => store)
+	const { slug, updateSlugContext } = useProjectStore((store) => store)
 
 	return (
 		<>
-			{isLoading && <Skeleton className="bg-primary/80 min-w-56 h-9" />}
+			{isLoading && <Skeleton className="bg-primary/80 min-w-60 h-9" />}
 			{!isLoading && (!projects || projects.length === 0) && (
 				<Button
 					variant="outline"
 					size="sm"
 					disabled
-					className="justify-normal min-w-56 h-9"
+					className="justify-normal min-w-60 h-9"
 				>
 					No hay proyectos
 				</Button>
@@ -54,37 +58,42 @@ export default function ProjectSelector() {
 				<Select
 					onValueChange={(value) => {
 						push(`/dashboard/${value}`)
-						setSlugPath(value)
 						updateSlugContext(value)
 					}}
-					value={slugPath}
+					value={slug}
 				>
-					<SelectTrigger className="w-min min-w-56">
+					<SelectTrigger className="w-min min-w-60">
 						<SelectValue placeholder="Selecciona un proyecto" />
 					</SelectTrigger>
 					<SelectContent>
-						<SelectGroup>
-							<SelectLabel className="text-xs text-gray-500">
-								Favoritos
-							</SelectLabel>
-							{projects
-								.filter((p: Project) => p.favorite)
-								.map((project: Project) => (
-									<SelectItem key={project.id} value={project.slug}>
-										{project.slug}
-									</SelectItem>
-								))}
-						</SelectGroup>
-						<SelectGroup>
-							<SelectLabel className="text-xs text-gray-500">Otros</SelectLabel>
-							{projects
-								.filter((p: Project) => !p.favorite)
-								.map((project: Project) => (
-									<SelectItem key={project.id} value={project.slug}>
-										{project.slug}
-									</SelectItem>
-								))}
-						</SelectGroup>
+						{projects.filter((p: Project) => p.favorite).length > 0 && (
+							<SelectGroup>
+								<SelectLabel className="text-xs text-gray-500">
+									Favoritos
+								</SelectLabel>
+								{projects
+									.filter((p: Project) => p.favorite)
+									.map((project: Project) => (
+										<SelectItem key={project.id} value={project.slug}>
+											{project.slug}
+										</SelectItem>
+									))}
+							</SelectGroup>
+						)}
+						{projects.filter((p: Project) => !p.favorite).length > 0 && (
+							<SelectGroup>
+								<SelectLabel className="text-xs text-gray-500">
+									Otros
+								</SelectLabel>
+								{projects
+									.filter((p: Project) => !p.favorite)
+									.map((project: Project) => (
+										<SelectItem key={project.id} value={project.slug}>
+											{project.slug}
+										</SelectItem>
+									))}
+							</SelectGroup>
+						)}
 					</SelectContent>
 				</Select>
 			)}

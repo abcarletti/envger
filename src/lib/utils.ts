@@ -6,16 +6,24 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function getSlugByName(name: string) {
-	if (!name) return ''
-	name = name.trim().toLowerCase().replace(/\s+/g, '-')
+	return `./${normalizeText(name)}`
+}
+
+export const getTagByName = (name: string) => {
+	return normalizeText(name)
+}
+
+const normalizeText = (text: string) => {
+	if (!text) return ''
+	text = text.trim().toLowerCase().replace(/\s+/g, '-')
 
 	accents.forEach((accent) => {
-		name = name.replace(accent.letters, accent.base)
+		text = text.replace(accent.letters, accent.base)
 	})
 
-	name = name.replace(/[^a-zA-Z0-9-]/g, '')
+	text = text.replace(/[^a-zA-Z0-9-]/g, '')
 
-	return `./${name}`
+	return text
 }
 
 const accents = [

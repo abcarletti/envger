@@ -1,6 +1,7 @@
 'use client'
 
 import { createProject } from '@/app/services/server-actions'
+import { AutosizeTextarea } from '@/components/ui/autosize-textarea'
 import { Button } from '@/components/ui/button'
 import {
 	Card,
@@ -26,6 +27,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 export default function CreateDashboardPage() {
@@ -46,16 +48,31 @@ export default function CreateDashboardPage() {
 	})
 
 	const onSubmit = async (values: z.infer<typeof createProyectSchema>) => {
-		createProject(values)
-		await queryClient.invalidateQueries({
-			queryKey: PROJECTS_SELECTOR_KEY,
-		})
-		push(`/dashboard/${values.slug}`)
+		try {
+			await createProject(values)
+			await queryClient.invalidateQueries({
+				queryKey: PROJECTS_SELECTOR_KEY,
+			})
+			push(`/dashboard/${values.slug}`)
+			toast.success('Proyecto creado correctamente')
+		} catch (error) {
+			if (
+				error instanceof Error &&
+				error.message.includes('Unique constraint failed on the fields')
+			) {
+				form.setError('name', {
+					type: 'manual',
+					message: 'El nombre del grupo ya existe',
+				})
+			} else {
+				toast.error('Se ha producido un error al crear el proyecto')
+			}
+		}
 	}
 
 	return (
 		<section className="flex flex-1 items-center justify-center">
-			<Card className="w-6/12">
+			<Card className="w-10/12 md:w-11/12 lg:w-9/12 xl:w-7/12">
 				<CardHeader className="flex items-center">
 					<CardTitle>Crear nuevo proyecto</CardTitle>
 					<CardDescription className="justify-center py-2">
@@ -91,7 +108,7 @@ export default function CreateDashboardPage() {
 										<FormItem className="w-full">
 											<FormLabel>Path</FormLabel>
 											<FormControl>
-												<Input {...field} disabled />
+												<Input {...field} readOnly />
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -105,7 +122,11 @@ export default function CreateDashboardPage() {
 									<FormItem className="w-full">
 										<FormLabel>Description</FormLabel>
 										<FormControl>
-											<Input {...field} />
+											<AutosizeTextarea
+												minHeight={36}
+												{...field}
+												className="bg-transparent"
+											/>
 										</FormControl>
 										<FormMessage />
 									</FormItem>

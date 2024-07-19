@@ -59,12 +59,14 @@ model Group {
   id          String   @id @default(cuid())
   project     Project  @relation(fields: [projectId], references: [id])
   projectId   String   @map("project_id")
+  tag         String
   name        String
   description String?
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
   KV          KV[]
 
+  @@unique([tag, projectId], name: "tag_project_id")
   @@index([projectId], name: "project_id")
   @@index([name], name: "group_name")
   @@map("groups")

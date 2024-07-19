@@ -2,6 +2,7 @@
 
 import prisma from '@/clients/prisma'
 import { auth, signIn } from '@/lib/auth'
+import { createProjectGroupSchema } from '@/schemas/group'
 import { createProyectSchema } from '@/schemas/project'
 import { Project } from '@prisma/client'
 import { z } from 'zod'
@@ -70,6 +71,23 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
 	})
 }
 
+export const getProjectGroupsBySlug = async (
+	slug: string,
+	tag: string | null,
+) => {
+	const session = await auth()
+
+	return prisma.group.findMany({
+		where: {
+			tag: tag || undefined,
+			project: {
+				slug,
+				userId: session?.user.id,
+			},
+		},
+	})
+}
+
 export async function setFavoriteProject(slug: string, favorite: boolean) {
 	const session = await auth()
 	return await prisma.project.update({
@@ -81,6 +99,29 @@ export async function setFavoriteProject(slug: string, favorite: boolean) {
 		},
 		data: {
 			favorite,
+		},
+	})
+}
+
+export const createGroup = async (
+	slug: string = '',
+	data: z.infer<typeof createProjectGroupSchema>,
+) => {
+	const session = await auth()
+
+	return await prisma.group.create({
+		data: {
+			name: data.name,
+			description: data.description,
+			tag: data.tag,
+			project: {
+				connect: {
+					slug_user_id: {
+						userId: <string>session?.user.id,
+						slug,
+					},
+				},
+			},
 		},
 	})
 }

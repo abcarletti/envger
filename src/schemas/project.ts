@@ -5,8 +5,8 @@ export const createProyectSchema = z.object({
 		.string({
 			message: 'El nombre del proyecto es obligatorio',
 		})
-		.min(2, {
-			message: 'El nombre del proyecto debe tener al menos 2 caracteres',
+		.min(1, {
+			message: 'El nombre del grupo es obligatorio',
 		})
 		.max(50, {
 			message: 'El nombre del proyecto debe tener menos de 50 caracteres',

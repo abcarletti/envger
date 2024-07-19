@@ -1,23 +1,23 @@
 import { createStore } from 'zustand/vanilla'
 
 export type ProjectState = {
-	slug: string
+	slug: string | undefined
 }
 
 export type ProjectActions = {
-	updateSlugContext: (slug: string) => void
+	updateSlugContext: (slug: string | undefined) => void
 }
 
 export type ProjectStore = ProjectState & ProjectActions
 
 export const initProjectStore = (): ProjectState => {
 	return {
-		slug: '',
+		slug: undefined,
 	}
 }
 
 export const defaultInitState: ProjectState = {
-	slug: '',
+	slug: undefined,
 }
 
 export const createProjectStore = (
@@ -25,6 +25,6 @@ export const createProjectStore = (
 ) => {
 	return createStore<ProjectStore>()((set) => ({
 		...initState,
-		updateSlugContext: (slug: string) => set(() => ({ slug })),
+		updateSlugContext: (slug: string | undefined) => set(() => ({ slug })),
 	}))
 }

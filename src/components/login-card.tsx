@@ -1,5 +1,9 @@
 import Link from 'next/link'
 
+import {
+	handleCredentialSignIn,
+	handleGitHubSignIn,
+} from '@/app/services/server-actions'
 import { Button } from '@/components/ui/button'
 import {
 	Card,
@@ -11,10 +15,6 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { GitHubLogoIcon } from '@radix-ui/react-icons'
-import {
-	handleCredentialSignIn,
-	handleGitHubSignIn,
-} from '@/app/services/server-actions'
 
 export default function LoginCard({
 	loginError,
