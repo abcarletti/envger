@@ -22,7 +22,7 @@ export default function DashboardLayout({
 		<div className="flex min-h-screen max-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] overflow-hidden">
 			<SidebarDesktop />
 			<div className="flex flex-col flex-1">
-				<header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+				<header className="flex h-14 items-center gap-4 border-b bg-background px-4 lg:h-[60px] lg:px-6">
 					<Sheet>
 						<SheetTrigger asChild>
 							<Button

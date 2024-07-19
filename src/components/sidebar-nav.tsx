@@ -2,7 +2,7 @@
 
 import queryGetData from '@/app/services/query-request'
 import { getProjectGroupsBySlug } from '@/app/services/server-actions'
-import { GROUPS_KEY } from '@/lib/constants'
+import { GROUPS_NAV_KEY } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { useProjectStore } from '@/providers/project-store-provider'
 import { Group } from '@prisma/client'
@@ -34,8 +34,14 @@ export const SidebarGroupsNav = () => {
 	}
 
 	const { data: groups, isLoading: isLoadingGroups } = queryGetData(
-		[...GROUPS_KEY, project?.slug || '', groupSelected || 'all-groups'],
+		[
+			GROUPS_NAV_KEY,
+			{
+				slug: project?.slug,
+			},
+		],
 		() => getProjectGroupsBySlug(project?.slug || '', null),
+		project && project != undefined && project.slug ? true : false,
 	)
 
 	useEffect(() => {
@@ -47,37 +53,39 @@ export const SidebarGroupsNav = () => {
 
 	return (
 		<div className="flex flex-col flex-1 px-2 pb-2 justify-between overflow-hidden">
-			<div className="flex flex-col flex-1  overflow-y-auto">
-				<Label className="text-sm text-muted-foreground">Grupos</Label>
-				<Separator className="my-2" />
-				<nav className="grid items-start px-2 mb-2 text-sm font-medium overflow-y-auto">
-					{!isLoadingGroups &&
-						groups &&
-						groups.map((group: Group) => (
-							<Button
-								variant={'ghost'}
-								className={cn(
-									'flex justify-between gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
-									group.tag === groupSelected
-										? 'bg-primary/10 text-primary'
-										: '',
-								)}
-								onClick={() => selectGroup(group.tag)}
-							>
-								<div className="flex justify-normal gap-3">
-									<FolderCode className="size-4" />
-									<Label>{group.name}</Label>
-								</div>
-								<X
+			{project && (
+				<div className="flex flex-col flex-1 overflow-y-auto">
+					<Label className="text-sm text-muted-foreground">Grupos</Label>
+					<Separator className="my-2" />
+					<nav className="grid items-start px-2 mb-2 text-sm font-medium overflow-y-auto">
+						{!isLoadingGroups &&
+							groups &&
+							groups.map((group: Group) => (
+								<Button
+									variant={'ghost'}
 									className={cn(
-										'size-4',
-										group.tag === groupSelected ? 'block' : 'hidden',
+										'flex justify-between gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
+										group.tag === groupSelected
+											? 'bg-primary/10 text-primary'
+											: '',
 									)}
-								/>
-							</Button>
-						))}
-				</nav>
-			</div>
+									onClick={() => selectGroup(group.tag)}
+								>
+									<div className="flex justify-normal gap-3">
+										<FolderCode className="size-4" />
+										<Label>{group.name}</Label>
+									</div>
+									<X
+										className={cn(
+											'size-4',
+											group.tag === groupSelected ? 'block' : 'hidden',
+										)}
+									/>
+								</Button>
+							))}
+					</nav>
+				</div>
+			)}
 			<AddGroupButtom />
 		</div>
 	)

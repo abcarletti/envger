@@ -2,76 +2,21 @@
 
 import { useToast } from '@/app/hooks/use-toast'
 import queryGetData from '@/app/services/query-request'
-import { getProjectGroupsBySlug } from '@/app/services/server-actions'
-import { GROUPS_KEY } from '@/lib/constants'
+import {
+	deleteGroup,
+	getProjectGroupsBySlug,
+} from '@/app/services/server-actions'
+import { GROUPS_KEY, GROUPS_NAV_KEY } from '@/lib/constants'
 import { useProjectStore } from '@/providers/project-store-provider'
 import { queryClient } from '@/providers/tanstack-query'
 import { Group } from '@prisma/client'
-import { Settings } from 'lucide-react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import AddGroupButtom from './add-group-buttom'
-import { Button } from './ui/button'
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from './ui/dropdown-menu'
+import GroupArticle from './compose-group-article'
 import { Label } from './ui/label'
 
-const composeGroupArticle = (
-	{ name, description }: Group,
-	hadleEditGroup: () => void,
-	hadleDeleteGroup: () => void,
-) => {
-	const editGroup = () => {
-		console.log('Edit group')
-		hadleEditGroup()
-	}
-
-	return (
-		<article className="flex flex-col flex-1 items-center min-h-24 border-2 border-gray-400 rounded-lg py-2 max-w-group">
-			<div className="flex w-full justify-between px-4">
-				<div className="flex flex-col">
-					<Label className="text-xl uppercase">{name}</Label>
-					<Label className="text-sm text-gray-400">{description}</Label>
-				</div>
-				<div>
-					<DropdownMenu>
-						<DropdownMenuTrigger className="flex items-center focus:outline-none mt-2">
-							<Settings className="size-4" />
-						</DropdownMenuTrigger>
-						<DropdownMenuContent>
-							<DropdownMenuItem>
-								<Button
-									size={'sm'}
-									variant={'ghost'}
-									className="w-full"
-									onClick={editGroup}
-								>
-									Editar
-								</Button>
-							</DropdownMenuItem>
-							<DropdownMenuItem>
-								<Button
-									size={'sm'}
-									variant={'destructive'}
-									className="w-full"
-									onClick={hadleDeleteGroup}
-								>
-									Eliminar
-								</Button>
-							</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
-				</div>
-			</div>
-		</article>
-	)
-}
-
-export const ProjectGroups = ({ slug }: { slug: string }) => {
+export default function ProjectGroups() {
 	const { setMessage } = useToast()
 	const [groupSelected, setGroupSelected] = useState<string | null>(null)
 	const [groupsComposed, setGroupsComposed] = useState<React.JSX.Element[]>([])
@@ -81,24 +26,44 @@ export const ProjectGroups = ({ slug }: { slug: string }) => {
 	const { project } = useProjectStore((store) => store)
 
 	const { data: groups, isLoading: isLoadingGroups } = queryGetData(
-		[...GROUPS_KEY, project?.slug || '', groupSelected || 'all-groups'],
-		() => getProjectGroupsBySlug(project?.slug || '', null),
+		[
+			GROUPS_KEY,
+			{
+				slug: project?.slug,
+				group: groupSelected,
+			},
+		],
+		() => getProjectGroupsBySlug(project?.slug || '', groupSelected),
+		project != undefined ? true : false,
 	)
 
-	const handleEditGroup = async (id: string) => {
-		console.log(`Editar grupo ${id}`)
-		await queryClient.invalidateQueries({
-			queryKey: [...GROUPS_KEY, slug, groupSelected || 'all-groups'],
-		})
+	const handleEditGroup = async () => {
+		invalidateGroupsQuery()
 		setMessage({
 			message: 'Grupo editado correctamente',
 			type: 'success',
 		})
 	}
 
-	const handleDeleteGroup = (id: string) => {
-		console.log(`Eliminando grupo ${id}`)
+	const handleDeleteGroup = async (id: string) => {
+		await deleteGroup(id, project?.id || '')
+		setMessage({
+			message: 'Grupo eliminado correctamente',
+			type: 'success',
+		})
+		invalidateGroupsQuery()
 		push(pathname)
+	}
+
+	const invalidateGroupsQuery = async () => {
+		if (project) {
+			await queryClient.invalidateQueries({
+				queryKey: [GROUPS_KEY],
+			})
+			await queryClient.invalidateQueries({
+				queryKey: [GROUPS_NAV_KEY],
+			})
+		}
 	}
 
 	useEffect(() => {
@@ -111,17 +76,18 @@ export const ProjectGroups = ({ slug }: { slug: string }) => {
 				if (firstElement) {
 					sections.push(
 						<div className="flex flex-col xl:flex-row flex-wrap gap-2 w-full items-stretch">
-							{composeGroupArticle(
-								firstElement,
-								() => handleEditGroup(firstElement.id),
-								() => handleDeleteGroup(firstElement.id),
+							<GroupArticle
+								group={firstElement}
+								handleEditGroup={() => handleEditGroup()}
+								handleDeleteGroup={() => handleDeleteGroup(firstElement.id)}
+							/>
+							{secondElement && (
+								<GroupArticle
+									group={secondElement}
+									handleEditGroup={() => handleEditGroup()}
+									handleDeleteGroup={() => handleDeleteGroup(secondElement.id)}
+								/>
 							)}
-							{secondElement &&
-								composeGroupArticle(
-									secondElement,
-									() => handleEditGroup(firstElement.id),
-									() => handleDeleteGroup(firstElement.id),
-								)}
 						</div>,
 					)
 				}

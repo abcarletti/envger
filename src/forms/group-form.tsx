@@ -1,5 +1,5 @@
 import { useToast } from '@/app/hooks/use-toast'
-import { createGroup } from '@/app/services/server-actions'
+import { createOrUpdateGroup } from '@/app/services/server-actions'
 import { AutosizeTextarea } from '@/components/ui/autosize-textarea'
 import { Button } from '@/components/ui/button'
 import { DialogClose } from '@/components/ui/dialog'
@@ -12,7 +12,7 @@ import {
 	FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { GROUPS_KEY } from '@/lib/constants'
+import { GROUPS_KEY, GROUPS_NAV_KEY } from '@/lib/constants'
 import { getTagByName } from '@/lib/utils'
 import { useProjectStore } from '@/providers/project-store-provider'
 import { queryClient } from '@/providers/tanstack-query'
@@ -29,6 +29,7 @@ export const GroupForm = ({
 	group?: Group
 	dialogOpen: (open: boolean) => void
 }) => {
+	console.log('group', group)
 	const { setMessage } = useToast()
 	const { project } = useProjectStore((store) => store)
 
@@ -51,18 +52,22 @@ export const GroupForm = ({
 	const onSubmit = async (values: z.infer<typeof createProjectGroupSchema>) => {
 		try {
 			if (project) {
-				await createGroup(values, project)
+				await createOrUpdateGroup(group?.id || '', values, project)
 				setMessage({ message: 'Grupo creado correctamente', type: 'success' })
 
 				await queryClient.invalidateQueries({
-					queryKey: [...GROUPS_KEY, project?.slug],
+					queryKey: [GROUPS_KEY],
+				})
+
+				await queryClient.invalidateQueries({
+					queryKey: [GROUPS_NAV_KEY],
 				})
 
 				reset()
 				dialogOpen(false)
 			} else {
 				setMessage({
-					message: 'No se ha podido crear el grupo',
+					message: 'No se ha podido guardar el grupo',
 					type: 'error',
 				})
 			}
@@ -78,7 +83,7 @@ export const GroupForm = ({
 				})
 			} else {
 				setMessage({
-					message: 'Se ha producido un error al crear el grupo',
+					message: 'Se ha producido un error al guardar el grupo',
 					type: 'error',
 				})
 			}
@@ -113,7 +118,7 @@ export const GroupForm = ({
 							<FormItem className="w-full">
 								<FormLabel>Description</FormLabel>
 								<FormControl>
-									<AutosizeTextarea minHeight={36} {...field} />
+									<AutosizeTextarea {...field} />
 								</FormControl>
 								<FormMessage />
 							</FormItem>

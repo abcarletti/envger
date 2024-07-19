@@ -24,8 +24,9 @@ export default function ProjectSelector() {
 	const pathname = usePathname()
 
 	const { data: projects, isLoading } = queryGetData(
-		PROJECTS_SELECTOR_KEY,
+		[PROJECTS_SELECTOR_KEY],
 		() => getSelectorProjects(),
+		true,
 	)
 
 	const { project, updateProjectContext, updateProjectContextBySlug } =

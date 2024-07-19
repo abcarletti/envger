@@ -51,7 +51,7 @@ export default function CreateDashboardPage() {
 		try {
 			await createProject(values)
 			await queryClient.invalidateQueries({
-				queryKey: PROJECTS_SELECTOR_KEY,
+				queryKey: [PROJECTS_SELECTOR_KEY],
 			})
 			push(`/dashboard/${values.slug}`)
 			toast.success('Proyecto creado correctamente')

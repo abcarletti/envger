@@ -2,7 +2,7 @@
 CREATE TYPE "Provider" AS ENUM ('GITHUB', 'CREDENTIALS');
 
 -- CreateEnum
-CREATE TYPE "Env" AS ENUM ('DEV', 'PRE', 'PRO');
+CREATE TYPE "Env" AS ENUM ('LOCAL', 'DEV', 'PRE', 'PRO');
 
 -- CreateTable
 CREATE TABLE "users" (
@@ -38,6 +38,7 @@ CREATE TABLE "projects" (
 CREATE TABLE "groups" (
     "id" TEXT NOT NULL,
     "project_id" TEXT NOT NULL,
+    "tag" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -52,10 +53,23 @@ CREATE TABLE "kvs" (
     "group_id" TEXT NOT NULL,
     "key" TEXT NOT NULL,
     "value" TEXT NOT NULL,
+    "environment" "Env" NOT NULL DEFAULT 'LOCAL',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "kvs_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "urls" (
+    "id" TEXT NOT NULL,
+    "group_id" TEXT NOT NULL,
+    "url" TEXT NOT NULL,
+    "environment" "Env" NOT NULL DEFAULT 'LOCAL',
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "urls_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -83,10 +97,16 @@ CREATE INDEX "project_id" ON "groups"("project_id");
 CREATE INDEX "group_name" ON "groups"("name");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "groups_tag_project_id_key" ON "groups"("tag", "project_id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "kvs_key_key" ON "kvs"("key");
 
 -- CreateIndex
-CREATE INDEX "group_id" ON "kvs"("group_id");
+CREATE INDEX "kv_group_id" ON "kvs"("group_id");
+
+-- CreateIndex
+CREATE INDEX "url_group_id" ON "urls"("group_id");
 
 -- AddForeignKey
 ALTER TABLE "projects" ADD CONSTRAINT "projects_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -96,3 +116,6 @@ ALTER TABLE "groups" ADD CONSTRAINT "groups_project_id_fkey" FOREIGN KEY ("proje
 
 -- AddForeignKey
 ALTER TABLE "kvs" ADD CONSTRAINT "kvs_group_id_fkey" FOREIGN KEY ("group_id") REFERENCES "groups"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "urls" ADD CONSTRAINT "urls_group_id_fkey" FOREIGN KEY ("group_id") REFERENCES "groups"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

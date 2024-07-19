@@ -23,3 +23,15 @@ To create a migration, run:
 ```bash
 npx prisma migrate dev --name [migration_name]
 ```
+
+To generate a client, run:
+
+```bash
+npx prisma generate
+```
+
+To execute seed scripts, run:
+
+```bash
+npx prisma db seed
+```

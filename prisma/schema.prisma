@@ -8,6 +8,7 @@ enum Provider {
 }
 
 enum Env {
+  LOCAL
   DEV
   PRE
   PRO
@@ -65,6 +66,7 @@ model Group {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
   KV          KV[]
+  URL         URL[]
 
   @@unique([tag, projectId], name: "tag_project_id")
   @@index([projectId], name: "project_id")
@@ -73,14 +75,28 @@ model Group {
 }
 
 model KV {
-  id        String   @id @default(cuid())
-  group     Group    @relation(fields: [groupId], references: [id])
-  groupId   String   @map("group_id")
-  key       String   @unique
-  value     String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id          String   @id @default(cuid())
+  group       Group    @relation(fields: [groupId], references: [id])
+  groupId     String   @map("group_id")
+  key         String   @unique
+  value       String
+  environment Env      @default(LOCAL)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
-  @@index([groupId], name: "group_id")
+  @@index([groupId], name: "kv_group_id")
   @@map("kvs")
+}
+
+model URL {
+  id          String   @id @default(cuid())
+  group       Group    @relation(fields: [groupId], references: [id])
+  groupId     String   @map("group_id")
+  url         String
+  environment Env      @default(LOCAL)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([groupId], name: "url_group_id")
+  @@map("urls")
 }

@@ -92,6 +92,9 @@ export const getProjectGroupsBySlug = async (
 				userId: session?.user.id,
 			},
 		},
+		orderBy: {
+			name: 'asc',
+		},
 	})
 }
 
@@ -110,13 +113,22 @@ export async function setFavoriteProject(slug: string, favorite: boolean) {
 	})
 }
 
-export const createGroup = async (
+export const createOrUpdateGroup = async (
+	groupId: string,
 	data: z.infer<typeof createProjectGroupSchema>,
 	project: Project,
 ) => {
 	const session = await auth()
 
 	return await prisma.group.upsert({
+		update: {
+			name: data.name,
+			description: data.description,
+			tag: data.tag,
+		},
+		where: {
+			id: groupId,
+		},
 		create: {
 			name: data.name,
 			description: data.description,
@@ -130,15 +142,17 @@ export const createGroup = async (
 				},
 			},
 		},
-		update: {
-			name: data.name,
-			description: data.description,
-			tag: data.tag,
-		},
+	})
+}
+
+export const deleteGroup = async (groupId: string, projectId: string) => {
+	const session = await auth()
+	return await prisma.group.delete({
 		where: {
-			tag_project_id: {
-				tag: data.tag,
-				projectId: project.id,
+			id: groupId,
+			project: {
+				id: projectId,
+				userId: <string>session?.user.id,
 			},
 		},
 	})
