@@ -4,6 +4,7 @@ import queryGetData from '@/app/services/query-request'
 import { getProjectGroupsBySlug } from '@/app/services/server-actions'
 import { GROUPS_KEY } from '@/lib/constants'
 import { cn } from '@/lib/utils'
+import { useProjectStore } from '@/providers/project-store-provider'
 import { Group } from '@prisma/client'
 import { FolderCode, X } from 'lucide-react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
@@ -13,11 +14,12 @@ import { Button } from './ui/button'
 import { Label } from './ui/label'
 import { Separator } from './ui/separator'
 
-export const SidebarGroupsNav = ({ slug }: { slug: string }) => {
+export const SidebarGroupsNav = () => {
 	const router = useRouter()
 	const pathname = usePathname()
 	const [groupSelected, setGroupSelected] = useState<string | null>(null)
 	const searchParams = useSearchParams()
+	const { project } = useProjectStore((store) => store)
 
 	const selectGroup = (tag: string) => {
 		if (groupSelected === tag) {
@@ -32,8 +34,8 @@ export const SidebarGroupsNav = ({ slug }: { slug: string }) => {
 	}
 
 	const { data: groups, isLoading: isLoadingGroups } = queryGetData(
-		[...GROUPS_KEY, slug],
-		() => getProjectGroupsBySlug(slug, null),
+		[...GROUPS_KEY, project?.slug || '', groupSelected || 'all-groups'],
+		() => getProjectGroupsBySlug(project?.slug || '', null),
 	)
 
 	useEffect(() => {

@@ -6,7 +6,7 @@
 
 */
 -- AlterTable
-ALTER TABLE "groups" ADD COLUMN     "tag" TEXT NOT NULL;
+ALTER TABLE "groups" ADD COLUMN if not exists "tag" TEXT NOT NULL;
 
 -- CreateIndex
-CREATE UNIQUE INDEX "groups_tag_project_id_key" ON "groups"("tag", "project_id");
+CREATE UNIQUE INDEX if not exists "groups_tag_project_id_key" ON "groups"("tag", "project_id");

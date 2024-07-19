@@ -23,23 +23,29 @@ export default function ProjectSelector() {
 	const { push } = useRouter()
 	const pathname = usePathname()
 
-	useEffect(() => {
-		if (pathname.includes('/dashboard')) {
-			const slug = pathname.split('/dashboard/')[1]
-			if (slug && slug != 'create') {
-				updateSlugContext(slug)
-			} else {
-				updateSlugContext('')
-			}
-		}
-	}, [pathname])
-
 	const { data: projects, isLoading } = queryGetData(
 		PROJECTS_SELECTOR_KEY,
 		() => getSelectorProjects(),
 	)
 
-	const { slug, updateSlugContext } = useProjectStore((store) => store)
+	const { project, updateProjectContext, updateProjectContextBySlug } =
+		useProjectStore((store) => store)
+
+	useEffect(() => {
+		if (pathname.includes('/dashboard')) {
+			const slug = pathname.split('/dashboard/')[1]
+			if (slug && slug != 'create') {
+				const project = projects?.find((p: Project) => p.slug === slug)
+				if (project) {
+					updateProjectContext(project)
+				} else {
+					updateProjectContextBySlug(slug)
+				}
+			} else {
+				updateProjectContext(undefined)
+			}
+		}
+	}, [pathname])
 
 	return (
 		<>
@@ -58,9 +64,11 @@ export default function ProjectSelector() {
 				<Select
 					onValueChange={(value) => {
 						push(`/dashboard/${value}`)
-						updateSlugContext(value)
+						updateProjectContext(
+							projects?.find((p: Project) => p.slug === value),
+						)
 					}}
-					value={slug}
+					value={project?.slug || ''}
 				>
 					<SelectTrigger className="w-min min-w-60">
 						<SelectValue placeholder="Selecciona un proyecto" />

@@ -1,23 +1,26 @@
+import { getProjectBySlug } from '@/app/services/server-actions'
+import { Project } from '@prisma/client'
 import { createStore } from 'zustand/vanilla'
 
 export type ProjectState = {
-	slug: string | undefined
+	project: Project | null
 }
 
 export type ProjectActions = {
-	updateSlugContext: (slug: string | undefined) => void
+	updateProjectContext: (project: Project | undefined) => void
+	updateProjectContextBySlug: (slug: string | undefined) => void
 }
 
 export type ProjectStore = ProjectState & ProjectActions
 
 export const initProjectStore = (): ProjectState => {
 	return {
-		slug: undefined,
+		project: null,
 	}
 }
 
 export const defaultInitState: ProjectState = {
-	slug: undefined,
+	project: null,
 }
 
 export const createProjectStore = (
@@ -25,6 +28,15 @@ export const createProjectStore = (
 ) => {
 	return createStore<ProjectStore>()((set) => ({
 		...initState,
-		updateSlugContext: (slug: string | undefined) => set(() => ({ slug })),
+		updateProjectContext: (project: Project | undefined) =>
+			set(() => ({ project })),
+		updateProjectContextBySlug: async (slug: string | undefined) => {
+			if (slug) {
+				const project = await getProjectBySlug(slug)
+				set({ project })
+			} else {
+				set({ project: undefined })
+			}
+		},
 	}))
 }

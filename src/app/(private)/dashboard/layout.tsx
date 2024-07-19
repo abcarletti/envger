@@ -13,11 +13,11 @@ export const metadata: Metadata = {
 	title: 'Guard notes - Dashboard',
 }
 
-export default function RootLayout({
+export default function DashboardLayout({
 	children,
-}: Readonly<{
+}: {
 	children: React.ReactNode
-}>) {
+}) {
 	return (
 		<div className="flex min-h-screen max-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] overflow-hidden">
 			<SidebarDesktop />
@@ -64,7 +64,7 @@ export default function RootLayout({
 					</div>
 					<AvatarStatus />
 				</header>
-				<main className="flex flex-1 overflow-hidden p-3">{children}</main>
+				{children}
 			</div>
 		</div>
 	)

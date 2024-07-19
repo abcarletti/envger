@@ -76,8 +76,16 @@ export const getProjectGroupsBySlug = async (
 	tag: string | null,
 ) => {
 	const session = await auth()
+	console.log('slug', slug)
 
-	return prisma.group.findMany({
+	return await prisma.group.findMany({
+		select: {
+			id: true,
+			name: true,
+			description: true,
+			tag: true,
+			projectId: true,
+		},
 		where: {
 			tag: tag || undefined,
 			project: {
@@ -104,13 +112,13 @@ export async function setFavoriteProject(slug: string, favorite: boolean) {
 }
 
 export const createGroup = async (
-	slug: string = '',
 	data: z.infer<typeof createProjectGroupSchema>,
+	project: Project,
 ) => {
 	const session = await auth()
 
-	return await prisma.group.create({
-		data: {
+	return await prisma.group.upsert({
+		create: {
 			name: data.name,
 			description: data.description,
 			tag: data.tag,
@@ -118,9 +126,20 @@ export const createGroup = async (
 				connect: {
 					slug_user_id: {
 						userId: <string>session?.user.id,
-						slug,
+						slug: project.slug,
 					},
 				},
+			},
+		},
+		update: {
+			name: data.name,
+			description: data.description,
+			tag: data.tag,
+		},
+		where: {
+			tag_project_id: {
+				tag: data.tag,
+				projectId: project.id,
 			},
 		},
 	})
