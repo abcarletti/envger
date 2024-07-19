@@ -74,56 +74,6 @@ export const SidebarGroupsNav = ({ slug }: { slug: string }) => {
 								/>
 							</Button>
 						))}
-					{!isLoadingGroups &&
-						groups &&
-						groups.map((group: Group) => (
-							<Button
-								variant={'ghost'}
-								className={cn(
-									'flex justify-between gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
-									group.tag === groupSelected
-										? 'bg-primary/10 text-primary'
-										: '',
-								)}
-								onClick={() => selectGroup(group.tag)}
-							>
-								<div className="flex justify-normal gap-3">
-									<FolderCode className="size-4" />
-									<Label>{group.name}</Label>
-								</div>
-								<X
-									className={cn(
-										'size-4',
-										group.tag === groupSelected ? 'block' : 'hidden',
-									)}
-								/>
-							</Button>
-						))}
-					{!isLoadingGroups &&
-						groups &&
-						groups.map((group: Group) => (
-							<Button
-								variant={'ghost'}
-								className={cn(
-									'flex justify-between gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
-									group.tag === groupSelected
-										? 'bg-primary/10 text-primary'
-										: '',
-								)}
-								onClick={() => selectGroup(group.tag)}
-							>
-								<div className="flex justify-normal gap-3">
-									<FolderCode className="size-4" />
-									<Label>{group.name}</Label>
-								</div>
-								<X
-									className={cn(
-										'size-4',
-										group.tag === groupSelected ? 'block' : 'hidden',
-									)}
-								/>
-							</Button>
-						))}
 				</nav>
 			</div>
 			<AddGroupButtom />
