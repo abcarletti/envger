@@ -76,7 +76,6 @@ export const getProjectGroupsBySlug = async (
 	tag: string | null,
 ) => {
 	const session = await auth()
-	console.log('slug', slug)
 
 	return await prisma.group.findMany({
 		select: {
