@@ -9,7 +9,6 @@ import { Group } from '@prisma/client'
 import { FolderCode, X } from 'lucide-react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import AddGroupButtom from './add-group-buttom'
 import { Button } from './ui/button'
 import { Label } from './ui/label'
 import { Separator } from './ui/separator'
@@ -87,7 +86,6 @@ export const SidebarGroupsNav = () => {
 					</nav>
 				</div>
 			)}
-			<AddGroupButtom />
 		</div>
 	)
 }

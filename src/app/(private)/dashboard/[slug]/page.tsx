@@ -7,6 +7,7 @@ import {
 	getProjectBySlug,
 	setFavoriteProject,
 } from '@/app/services/server-actions'
+import AddGroupButtom from '@/components/add-group-buttom'
 import ProjectGroups from '@/components/project-groups'
 import { Button } from '@/components/ui/button'
 import {
@@ -124,10 +125,11 @@ export default function ProjectPage({
 							</div>
 						</div>
 						<div className="flex pl-8 items-center">
-							<div className="flex flex-col">
+							<div className="flex gap-3 items-center">
+								<AddGroupButtom />
 								<Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
 									<DropdownMenu>
-										<DropdownMenuTrigger className="flex items-center focus:outline-none mt-2">
+										<DropdownMenuTrigger className="flex items-center focus:outline-none h-7">
 											<Settings className="size-4" />
 										</DropdownMenuTrigger>
 										<DropdownMenuContent>

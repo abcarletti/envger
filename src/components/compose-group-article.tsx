@@ -55,7 +55,7 @@ export default function GroupArticle({
 					)}
 					<Separator className="flex bg-primary w-2/12" />
 				</div>
-				<div>
+				<div className="">
 					<Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
 						<DropdownMenu>
 							<DropdownMenuTrigger className="flex items-center focus:outline-none mt-2">

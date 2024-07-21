@@ -33,7 +33,7 @@ const AddGroupButtom = () => {
 				<Button
 					size={'sm'}
 					className={cn(
-						'w-full bg-primary text-primary-foreground',
+						'flex w-full bg-primary text-primary-foreground h-7 items-center justify-center',
 						showButton ? 'block' : 'hidden',
 					)}
 				>
