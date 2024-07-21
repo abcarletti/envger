@@ -8,7 +8,7 @@ import QueryProvider from '../providers/tanstack-query'
 import './globals.css'
 
 const ibm = IBM_Plex_Mono({
-	weight: ['400', '500', '700'],
+	weight: ['100', '200', '300', '400', '500', '600', '700'],
 	subsets: ['latin'],
 })
 
@@ -23,7 +23,7 @@ export default function RootLayout({
 	children: React.ReactNode
 }>) {
 	return (
-		<html lang="es">
+		<html lang="es" suppressHydrationWarning>
 			<body className={ibm.className}>
 				<ThemeProvider
 					attribute="class"

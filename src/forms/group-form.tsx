@@ -71,7 +71,6 @@ export const GroupForm = ({
 				})
 			}
 		} catch (error) {
-			console.log(error)
 			if (
 				error instanceof Error &&
 				error.message.includes('Unique constraint failed on the fields')

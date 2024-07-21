@@ -1,7 +1,7 @@
 'use client'
 
 import { useToast } from '@/app/hooks/use-toast'
-import { createOrUpdateCredentials } from '@/app/services/kv-service'
+import { createOrUpdateUrl } from '@/app/services/url-service'
 import { Button } from '@/components/ui/button'
 import {
 	Form,
@@ -20,44 +20,40 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select'
-import { CREDENTIALS_KEY } from '@/lib/constants'
+import { URLS_KEY } from '@/lib/constants'
 import { queryClient } from '@/providers/tanstack-query'
-import { createKVSchema } from '@/schemas/kv'
+import { createUrlSchema } from '@/schemas/url'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Kv } from '@prisma/client'
-import { Eye, EyeOff } from 'lucide-react'
-import { useState } from 'react'
+import { Url } from '@prisma/client'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-const KVForm = ({
-	kvDetail,
+const UrlForm = ({
+	urlDetail,
 	groupId,
 	closeDialog,
 }: {
-	kvDetail?: Kv
+	urlDetail?: Url
 	groupId: string
 	closeDialog: () => void
 }) => {
 	const { setMessage } = useToast()
-	const [showPassword, setShowPassword] = useState(false)
 
-	const form = useForm<z.infer<typeof createKVSchema>>({
-		resolver: zodResolver(createKVSchema),
+	const form = useForm<z.infer<typeof createUrlSchema>>({
+		resolver: zodResolver(createUrlSchema),
 		defaultValues: {
-			key: kvDetail?.key || '',
-			value: kvDetail?.value || '',
-			environment: kvDetail?.environment || '',
+			url: urlDetail?.url || '',
+			environment: urlDetail?.environment || '',
 		},
 	})
 	const { reset } = form
 
-	const onSubmit = async (values: z.infer<typeof createKVSchema>) => {
+	const onSubmit = async (values: z.infer<typeof createUrlSchema>) => {
 		try {
-			await createOrUpdateCredentials(kvDetail?.id, groupId, values)
+			await createOrUpdateUrl(urlDetail?.id, groupId, values)
 			await queryClient.invalidateQueries({
 				queryKey: [
-					CREDENTIALS_KEY,
+					URLS_KEY,
 					{
 						group: groupId,
 					},
@@ -65,15 +61,13 @@ const KVForm = ({
 			})
 			reset()
 			setMessage({
-				message: kvDetail
-					? 'Credenciales actualizadas'
-					: 'Credenciales creadas',
+				message: urlDetail ? 'Url actualizada' : 'Url creada',
 				type: 'success',
 			})
 			closeDialog()
 		} catch (error) {
 			setMessage({
-				message: 'Se ha producido un error guardando las credenciales',
+				message: 'Se ha producido un error guardando la url',
 				type: 'error',
 			})
 		}
@@ -113,58 +107,23 @@ const KVForm = ({
 							</FormItem>
 						)}
 					/>
-					<div className="flex gap-2">
-						<FormField
-							control={form.control}
-							name="key"
-							render={({ field }) => (
-								<FormItem className="w-full">
-									<FormLabel>Usuario</FormLabel>
-									<FormControl>
-										<Input placeholder="Usuario" {...field} />
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name="value"
-							render={({ field }) => (
-								<FormItem className="w-full">
-									<FormLabel>Contraseña</FormLabel>
-									<FormControl>
-										<div className="flex items-center">
-											<Input
-												className="relative"
-												type={showPassword ? 'text' : 'password'}
-												placeholder="Constraseña"
-												{...field}
-											/>
-											<Button
-												variant={'ghost'}
-												size={'icon'}
-												type="button"
-												onClick={() => setShowPassword(!showPassword)}
-												className="absolute right-6"
-											>
-												{showPassword ? (
-													<EyeOff className="size-5" />
-												) : (
-													<Eye className="size-5" />
-												)}
-											</Button>
-										</div>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-					</div>
+					<FormField
+						control={form.control}
+						name="url"
+						render={({ field }) => (
+							<FormItem className="w-full">
+								<FormLabel>Url</FormLabel>
+								<FormControl>
+									<Input placeholder="Url" {...field} />
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
 				</div>
 				<footer className="flex flex-row-reverse mt-4 gap-2">
 					<Button type="submit" size={'lg'} className="w-full">
-						{kvDetail ? 'Actualizar' : 'Guardar'}
+						{urlDetail ? 'Actualizar' : 'Guardar'}
 					</Button>
 					<Button
 						size={'lg'}
@@ -180,4 +139,4 @@ const KVForm = ({
 	)
 }
 
-export default KVForm
+export default UrlForm

@@ -46,13 +46,20 @@ export default function ProjectGroups() {
 	}
 
 	const handleDeleteGroup = async (id: string) => {
-		await deleteGroup(id, project?.id || '')
-		setMessage({
-			message: 'Grupo eliminado correctamente',
-			type: 'success',
-		})
-		invalidateGroupsQuery()
-		push(pathname)
+		try {
+			await deleteGroup(id, project?.id || '')
+			setMessage({
+				message: 'Grupo eliminado correctamente',
+				type: 'success',
+			})
+			invalidateGroupsQuery()
+			push(pathname)
+		} catch (error) {
+			setMessage({
+				message: 'Error al eliminar el grupo',
+				type: 'error',
+			})
+		}
 	}
 
 	const invalidateGroupsQuery = async () => {
@@ -75,14 +82,19 @@ export default function ProjectGroups() {
 
 				if (firstElement) {
 					sections.push(
-						<div className="flex flex-col xl:flex-row flex-wrap gap-2 w-full items-stretch">
+						<div
+							key={`section-${firstElement.id}`}
+							className="flex flex-col xl:flex-row flex-wrap gap-2 w-full items-stretch"
+						>
 							<GroupArticle
+								key={`first-${firstElement.id}`}
 								group={firstElement}
 								handleEditGroup={() => handleEditGroup()}
 								handleDeleteGroup={() => handleDeleteGroup(firstElement.id)}
 							/>
 							{secondElement && (
 								<GroupArticle
+									key={`second-${secondElement.id}`}
 									group={secondElement}
 									handleEditGroup={() => handleEditGroup()}
 									handleDeleteGroup={() => handleDeleteGroup(secondElement.id)}

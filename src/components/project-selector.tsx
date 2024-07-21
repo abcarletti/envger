@@ -23,7 +23,7 @@ export default function ProjectSelector() {
 	const { push } = useRouter()
 	const pathname = usePathname()
 
-	const { data: projects, isLoading } = queryGetData(
+	const { data: projects, isLoading } = queryGetData<Project[]>(
 		[PROJECTS_SELECTOR_KEY],
 		() => getSelectorProjects(),
 		true,

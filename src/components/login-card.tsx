@@ -22,7 +22,6 @@ export default function LoginCard({
 	loginError: (msg: string) => void
 }) {
 	const handleError = (msg: string) => {
-		console.error(msg)
 		loginError(msg)
 	}
 
@@ -43,7 +42,6 @@ export default function LoginCard({
 							try {
 								await handleCredentialSignIn(formData)
 							} catch (error) {
-								console.error('Error signing in with credentials:', error)
 								handleError('Credenciales incorrectas')
 							}
 						}}

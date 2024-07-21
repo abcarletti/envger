@@ -1,9 +1,11 @@
 import { GroupForm } from '@/forms/group-form'
 import KVForm from '@/forms/kv-form'
-import { cn } from '@/lib/utils'
+import UrlForm from '@/forms/url-form'
 import { Group } from '@prisma/client'
 import { Settings } from 'lucide-react'
 import { Suspense, useState } from 'react'
+import DialogForm from './form-dialog'
+import KvGroup from './kv-group'
 import { Button, buttonVariants } from './ui/button'
 import {
 	Dialog,
@@ -20,6 +22,7 @@ import {
 	DropdownMenuTrigger,
 } from './ui/dropdown-menu'
 import { Label } from './ui/label'
+import { Separator } from './ui/separator'
 import { Skeleton } from './ui/skeleton'
 import UrlsGroup from './urls-group'
 
@@ -33,6 +36,8 @@ export default function GroupArticle({
 	handleDeleteGroup: () => void
 }) {
 	const [dialogOpen, setDialogOpen] = useState(false)
+	const [openUrlDialog, setOpenUrlDialog] = useState(false)
+	const [openKVDialog, setOpenKVDialog] = useState(false)
 	const { name, description } = group
 
 	const closeDialog = () => {
@@ -43,9 +48,12 @@ export default function GroupArticle({
 	return (
 		<article className="flex flex-col flex-1 items-center min-h-24 bg-muted/30 border-[1px] border-muted rounded-lg py-2 max-w-group">
 			<div className="flex flex-1 w-full justify-between px-4">
-				<div className="flex flex-col">
+				<div className="flex flex-col gap-[4px] w-full">
 					<Label className="text-xl">{name}</Label>
-					<Label className="text-sm text-gray-400">{description}</Label>
+					{description && (
+						<Label className="text-sm text-gray-400">{description}</Label>
+					)}
+					<Separator className="flex bg-primary w-2/12" />
 				</div>
 				<div>
 					<Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -55,7 +63,7 @@ export default function GroupArticle({
 							</DropdownMenuTrigger>
 							<DropdownMenuContent>
 								<DropdownMenuItem className="p-0">
-									<DialogTrigger className="w-full">
+									<DialogTrigger className="w-full" asChild>
 										<Button size={'sm'} variant={'ghost'} className="w-full">
 											Editar
 										</Button>
@@ -75,9 +83,9 @@ export default function GroupArticle({
 						</DropdownMenu>
 						<DialogContent className="sm:max-w-md">
 							<DialogHeader>
-								<DialogTitle>Añadir grupo</DialogTitle>
+								<DialogTitle>Editar grupo: {group.name}</DialogTitle>
 								<DialogDescription>
-									Añade un nuevo grupo al proyecto actual
+									Modifica los valores del grupo
 								</DialogDescription>
 							</DialogHeader>
 							<GroupForm group={group} dialogOpen={closeDialog} />
@@ -99,46 +107,51 @@ export default function GroupArticle({
 			>
 				<UrlsGroup groupId={group.id} />
 			</Suspense>
+			<Suspense
+				fallback={
+					<div className="flex w-full p-2">
+						<section className="flex w-full gap-2">
+							<Skeleton className="h-8 min-w-44 bg-primary/40" />
+							<div className="flex w-full">
+								<Skeleton className="h-8 w-full bg-primary/40" />
+							</div>
+						</section>
+					</div>
+				}
+			>
+				<KvGroup groupId={group.id} />
+			</Suspense>
 			<footer className="flex justify-end gap-2 pt-4 text-primary">
-				<Dialog>
-					<DialogTrigger
-						className={cn(
-							buttonVariants({
-								size: 'sm',
-								variant: 'outline',
-							}),
-						)}
-					>
-						Añadir URL
-					</DialogTrigger>
-					<DialogContent>
-						<DialogHeader>
-							<DialogTitle>Are you absolutely sure?</DialogTitle>
-							<DialogDescription>
-								This action cannot be undone. This will permanently delete your
-								account and remove your data from our servers.
-							</DialogDescription>
-						</DialogHeader>
-					</DialogContent>
-				</Dialog>
-				<Dialog>
-					<DialogTrigger
-						className={cn(
-							buttonVariants({
-								size: 'sm',
-								variant: 'outline',
-							}),
-						)}
-					>
-						Añadir credenciales
-					</DialogTrigger>
-					<DialogContent>
-						<DialogHeader>
-							<DialogTitle>{`Crear credenciales del grupo: ${group.name}`}</DialogTitle>
-						</DialogHeader>
-						<KVForm />
-					</DialogContent>
-				</Dialog>
+				<DialogForm
+					triggerText="Añadir URL"
+					title={`Crear URL del grupo: ${group.name}`}
+					className={buttonVariants({
+						size: 'sm',
+						variant: 'outline',
+					})}
+					isDialogOpen={openUrlDialog}
+					handleDialogOpen={setOpenUrlDialog}
+				>
+					<UrlForm
+						groupId={group.id}
+						closeDialog={() => setOpenUrlDialog(false)}
+					/>
+				</DialogForm>
+				<DialogForm
+					triggerText="Añadir credenciales"
+					title={`Crear credenciales del grupo: ${group.name}`}
+					className={buttonVariants({
+						size: 'sm',
+						variant: 'outline',
+					})}
+					isDialogOpen={openKVDialog}
+					handleDialogOpen={setOpenKVDialog}
+				>
+					<KVForm
+						groupId={group.id}
+						closeDialog={() => setOpenKVDialog(false)}
+					/>
+				</DialogForm>
 			</footer>
 		</article>
 	)

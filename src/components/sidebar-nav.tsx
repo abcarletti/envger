@@ -62,6 +62,7 @@ export const SidebarGroupsNav = () => {
 							groups &&
 							groups.map((group: Group) => (
 								<Button
+									key={group.tag}
 									variant={'ghost'}
 									className={cn(
 										'flex justify-between gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',

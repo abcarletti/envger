@@ -7,7 +7,7 @@ import { createProyectSchema } from '@/schemas/project'
 import { Group, Project } from '@prisma/client'
 import { z } from 'zod'
 
-export async function handleCredentialSignIn(formData: any) {
+export const handleCredentialSignIn = async (formData: any) => {
 	await signIn('credentials', formData, {
 		redirectTo: '/dashboard',
 	})
@@ -19,31 +19,41 @@ export async function handleGitHubSignIn() {
 	})
 }
 
-export async function createProject(data: z.infer<typeof createProyectSchema>) {
+export const createOrUpdateProject = async (
+	data: z.infer<typeof createProyectSchema>,
+	projectId?: string,
+) => {
 	const session = await auth()
 
-	const project = await prisma.project.create({
-		data: {
-			name: data.name,
-			slug: data.slug.replace('./', ''),
-			description: data.description,
-			userId: <string>session?.user.id,
-			imageUrl: data.imageUrl,
-		},
-	})
-
-	return project
+	if (projectId) {
+		return await prisma.project.update({
+			where: {
+				id: projectId,
+				userId: <string>session?.user.id,
+			},
+			data: {
+				name: data.name,
+				slug: data.slug.replace('./', ''),
+				description: data.description,
+				// imageUrl: data.imageUrl,
+			},
+		})
+	} else {
+		return await prisma.project.create({
+			data: {
+				name: data.name,
+				slug: data.slug.replace('./', ''),
+				description: data.description,
+				// imageUrl: data.imageUrl,
+				userId: <string>session?.user.id,
+			},
+		})
+	}
 }
 
-export async function getSelectorProjects() {
+export const getSelectorProjects = async (): Promise<Project[]> => {
 	const session = await auth()
 	return prisma.project.findMany({
-		select: {
-			id: true,
-			name: true,
-			slug: true,
-			favorite: true,
-		},
 		where: {
 			userId: session?.user.id,
 		},
@@ -58,7 +68,9 @@ export async function getSelectorProjects() {
 	})
 }
 
-export async function getProjectBySlug(slug: string): Promise<Project | null> {
+export const getProjectBySlug = async (
+	slug: string,
+): Promise<Project | null> => {
 	const session = await auth()
 	return prisma.project.findFirst({
 		where: {
@@ -91,7 +103,7 @@ export const getProjectGroupsBySlug = async (
 	})
 }
 
-export async function setFavoriteProject(slug: string, favorite: boolean) {
+export const setFavoriteProject = async (slug: string, favorite: boolean) => {
 	const session = await auth()
 	return await prisma.project.update({
 		where: {
@@ -121,6 +133,10 @@ export const createOrUpdateGroup = async (
 		},
 		where: {
 			id: groupId,
+			project: {
+				userId: <string>session?.user.id,
+				slug: project.slug,
+			},
 		},
 		create: {
 			name: data.name,

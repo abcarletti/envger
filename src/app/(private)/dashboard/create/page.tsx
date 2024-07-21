@@ -1,6 +1,6 @@
 'use client'
 
-import { createProject } from '@/app/services/server-actions'
+import { createOrUpdateProject } from '@/app/services/server-actions'
 import { AutosizeTextarea } from '@/components/ui/autosize-textarea'
 import { Button } from '@/components/ui/button'
 import {
@@ -43,13 +43,13 @@ export default function CreateDashboardPage() {
 			name: '',
 			slug: '',
 			description: '',
-			imageUrl: '',
+			// imageUrl: '',
 		},
 	})
 
 	const onSubmit = async (values: z.infer<typeof createProyectSchema>) => {
 		try {
-			await createProject(values)
+			await createOrUpdateProject(values)
 			await queryClient.invalidateQueries({
 				queryKey: [PROJECTS_SELECTOR_KEY],
 			})
@@ -122,17 +122,13 @@ export default function CreateDashboardPage() {
 									<FormItem className="w-full">
 										<FormLabel>Description</FormLabel>
 										<FormControl>
-											<AutosizeTextarea
-												minHeight={36}
-												{...field}
-												className="bg-transparent"
-											/>
+											<AutosizeTextarea {...field} className="bg-transparent" />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
 								)}
 							/>
-							<FormField
+							{/* <FormField
 								control={form.control}
 								name="imageUrl"
 								render={({ field }) => (
@@ -144,8 +140,8 @@ export default function CreateDashboardPage() {
 										<FormMessage />
 									</FormItem>
 								)}
-							/>
-							<div className="flex flex-row-reverse mt-4 gap-2">
+							/> */}
+							<footer className="flex flex-row-reverse mt-4 gap-2">
 								<Button type="submit" size={'lg'} className="w-full">
 									Guardar
 								</Button>
@@ -157,7 +153,7 @@ export default function CreateDashboardPage() {
 								>
 									<Link href="/dashboard">Cancelar</Link>
 								</Button>
-							</div>
+							</footer>
 						</form>
 					</Form>
 				</CardContent>

@@ -13,5 +13,5 @@ export const createProyectSchema = z.object({
 		}),
 	slug: z.string(),
 	description: z.string().optional(),
-	imageUrl: z.string().optional(),
+	// imageUrl: z.string().optional(),
 })

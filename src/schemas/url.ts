@@ -7,6 +7,9 @@ export const createUrlSchema = z.object({
 		})
 		.min(1, {
 			message: 'La URL es obligatoria',
+		})
+		.url({
+			message: 'La URL no es válida',
 		}),
 	environment: z
 		.string({

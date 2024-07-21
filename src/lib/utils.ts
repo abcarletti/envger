@@ -1,3 +1,4 @@
+import { Env } from '@prisma/client'
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
@@ -35,3 +36,18 @@ const accents = [
 	{ base: 'c', letters: /[çćč]/g },
 	{ base: 'n', letters: /[ñń]/g },
 ]
+
+export const getEnvType = (env: string): Env => {
+	switch (env) {
+		case 'LOCAL':
+			return Env.LOCAL
+		case 'DEV':
+			return Env.DEV
+		case 'PRE':
+			return Env.PRE
+		case 'PRO':
+			return Env.PRO
+		default:
+			return Env.LOCAL
+	}
+}

@@ -35,10 +35,8 @@ async function createDefaultUser() {
 	}
 
 	const user = await prisma.user.findFirst({
-		where: { username: defaultUsername },
+		where: { username: defaultUsername, provider: Provider.CREDENTIALS },
 	})
-
-	console.log('user', user)
 
 	if (user) {
 		console.log('Default user already exists')
@@ -60,6 +58,8 @@ async function createDefaultUser() {
 			completeName: defaultUsername,
 		},
 	})
+
+	console.log('Default user created')
 }
 
 async function main() {
