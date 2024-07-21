@@ -4,7 +4,7 @@ import prisma from '@/clients/prisma'
 import { auth, signIn } from '@/lib/auth'
 import { createProjectGroupSchema } from '@/schemas/group'
 import { createProyectSchema } from '@/schemas/project'
-import { Project } from '@prisma/client'
+import { Group, Project } from '@prisma/client'
 import { z } from 'zod'
 
 export async function handleCredentialSignIn(formData: any) {
@@ -74,17 +74,10 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
 export const getProjectGroupsBySlug = async (
 	slug: string,
 	tag: string | null,
-) => {
+): Promise<Group[]> => {
 	const session = await auth()
 
 	return await prisma.group.findMany({
-		select: {
-			id: true,
-			name: true,
-			description: true,
-			tag: true,
-			projectId: true,
-		},
 		where: {
 			tag: tag || undefined,
 			project: {

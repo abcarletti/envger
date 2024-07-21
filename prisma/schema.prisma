@@ -20,7 +20,7 @@ datasource db {
 }
 
 model User {
-  id           String    @id @default(cuid())
+  id           String    @id @default(uuid())
   provider     Provider  @default(CREDENTIALS)
   username     String?
   password     String?
@@ -37,7 +37,7 @@ model User {
 }
 
 model Project {
-  id          String   @id @default(cuid())
+  id          String   @id @default(uuid())
   name        String
   slug        String
   description String?
@@ -57,7 +57,7 @@ model Project {
 }
 
 model Group {
-  id          String   @id @default(cuid())
+  id          String   @id @default(uuid())
   project     Project  @relation(fields: [projectId], references: [id])
   projectId   String   @map("project_id")
   tag         String
@@ -65,8 +65,8 @@ model Group {
   description String?
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
-  KV          KV[]
-  URL         URL[]
+  KV          Kv[]
+  URL         Url[]
 
   @@unique([tag, projectId], name: "tag_project_id")
   @@index([projectId], name: "project_id")
@@ -74,11 +74,11 @@ model Group {
   @@map("groups")
 }
 
-model KV {
-  id          String   @id @default(cuid())
+model Kv {
+  id          String   @id @default(uuid())
   group       Group    @relation(fields: [groupId], references: [id])
   groupId     String   @map("group_id")
-  key         String   @unique
+  key         String
   value       String
   environment Env      @default(LOCAL)
   createdAt   DateTime @default(now()) @map("created_at")
@@ -88,8 +88,8 @@ model KV {
   @@map("kvs")
 }
 
-model URL {
-  id          String   @id @default(cuid())
+model Url {
+  id          String   @id @default(uuid())
   group       Group    @relation(fields: [groupId], references: [id])
   groupId     String   @map("group_id")
   url         String

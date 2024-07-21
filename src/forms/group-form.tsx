@@ -29,7 +29,6 @@ export const GroupForm = ({
 	group?: Group
 	dialogOpen: (open: boolean) => void
 }) => {
-	console.log('group', group)
 	const { setMessage } = useToast()
 	const { project } = useProjectStore((store) => store)
 

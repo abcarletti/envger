@@ -1,14 +1,14 @@
 import { GROUPS_KEY } from '@/lib/constants'
 import { useQuery } from '@tanstack/react-query'
 
-export default function queryGetData(
+export default function queryGetData<T>(
 	key: any[],
-	queryData: () => Promise<any>,
+	queryData: () => Promise<T>,
 	enabled: boolean,
 ) {
 	if (!key) {
 		return {
-			data: null,
+			data: undefined,
 			isLoading: false,
 		}
 	}

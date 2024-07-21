@@ -100,9 +100,6 @@ CREATE INDEX "group_name" ON "groups"("name");
 CREATE UNIQUE INDEX "groups_tag_project_id_key" ON "groups"("tag", "project_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "kvs_key_key" ON "kvs"("key");
-
--- CreateIndex
 CREATE INDEX "kv_group_id" ON "kvs"("group_id");
 
 -- CreateIndex

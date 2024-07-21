@@ -25,7 +25,7 @@ export default function ProjectGroups() {
 	const pathname = usePathname()
 	const { project } = useProjectStore((store) => store)
 
-	const { data: groups, isLoading: isLoadingGroups } = queryGetData(
+	const { data: groups, isLoading: isLoadingGroups } = queryGetData<Group[]>(
 		[
 			GROUPS_KEY,
 			{

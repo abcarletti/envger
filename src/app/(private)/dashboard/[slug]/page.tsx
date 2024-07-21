@@ -12,6 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { PROJECT_KEY, PROJECTS_SELECTOR_KEY } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { queryClient } from '@/providers/tanstack-query'
+import { Project } from '@prisma/client'
 import { Star } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
@@ -21,16 +22,19 @@ export default function ProjectPage({
 	params: { slug: string }
 }) {
 	const { setMessage } = useToast()
-	const [lastFavorite, setLastFavorite] = useState(undefined)
-
-	const { data: project, isLoading: isLoadingProjects } = queryGetData(
-		[PROJECT_KEY, { slug }],
-		() => getProjectBySlug(slug),
-		slug ? true : false,
+	const [lastFavorite, setLastFavorite] = useState<boolean | undefined>(
+		undefined,
 	)
 
+	const { data: project, isLoading: isLoadingProjects } =
+		queryGetData<Project | null>(
+			[PROJECT_KEY, { slug }],
+			() => getProjectBySlug(slug),
+			slug ? true : false,
+		)
+
 	function handleFavorite() {
-		setFavoriteProject(slug, !project.favorite)
+		setFavoriteProject(slug, !project?.favorite)
 		queryClient.invalidateQueries({
 			queryKey: [PROJECT_KEY],
 		})
@@ -41,12 +45,12 @@ export default function ProjectPage({
 
 	useEffect(() => {
 		if (lastFavorite === undefined && project) {
-			setLastFavorite(project.favorite)
+			setLastFavorite(project?.favorite)
 			return
 		}
 		if (project) {
 			if (lastFavorite !== project.favorite) {
-				setLastFavorite(project.favorite)
+				setLastFavorite(project?.favorite)
 				setMessage({
 					message: `El proyecto se ha ${project.favorite ? 'marcado' : 'desmarcado'} como favorito`,
 					type: 'success',
