@@ -1,8 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	reactStrictMode: true,
-
+	swcMinify: true,
+	trailingSlash: false,
+	generateEtags: true,
+	poweredByHeader: false,
 	images: {
+		unoptimized: true,
 		remotePatterns: [
 			{
 				protocol: 'https',

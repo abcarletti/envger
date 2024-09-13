@@ -63,7 +63,7 @@ const UrlsGroup = ({ groupId }: { groupId: string }) => {
 						hidden: !urls || urls.length === 0,
 					})}
 				>
-					<Label className="text-lg text-gray-400">URLs</Label>
+					<Label className="text-md text-gray-400">URLs</Label>
 				</div>
 				{!isLoading &&
 					urls &&

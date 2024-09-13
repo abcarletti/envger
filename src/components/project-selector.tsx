@@ -15,18 +15,19 @@ import { PROJECTS_SELECTOR_KEY } from '@/lib/constants'
 import { useProjectStore } from '@/providers/project-store-provider'
 import { Project } from '@prisma/client'
 import { usePathname, useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from './ui/button'
 import { Skeleton } from './ui/skeleton'
 
 export default function ProjectSelector() {
 	const { push } = useRouter()
 	const pathname = usePathname()
+	const [showProjectSelector, setShowProjectSelector] = useState<boolean>(false)
 
 	const { data: projects, isLoading } = queryGetData<Project[]>(
 		[PROJECTS_SELECTOR_KEY],
 		() => getSelectorProjects(),
-		true,
+		showProjectSelector,
 	)
 
 	const { project, updateProjectContext, updateProjectContextBySlug } =
@@ -46,22 +47,31 @@ export default function ProjectSelector() {
 				updateProjectContext(undefined)
 			}
 		}
+		if (pathname) {
+			const isDashboard = pathname === '/dashboard'
+			const isCreate = pathname === '/dashboard/create'
+			setShowProjectSelector(!isDashboard && !isCreate)
+		}
 	}, [pathname])
 
 	return (
 		<>
-			{isLoading && <Skeleton className="bg-primary/80 min-w-60 h-9" />}
-			{!isLoading && (!projects || projects.length === 0) && (
-				<Button
-					variant="outline"
-					size="sm"
-					disabled
-					className="justify-normal min-w-60 h-9"
-				>
-					No hay proyectos
-				</Button>
+			{showProjectSelector && isLoading && (
+				<Skeleton className="bg-primary/80 min-w-60 h-9" />
 			)}
-			{!isLoading && projects && projects.length > 0 && (
+			{showProjectSelector &&
+				!isLoading &&
+				(!projects || projects.length === 0) && (
+					<Button
+						variant="outline"
+						size="sm"
+						disabled
+						className="justify-normal min-w-60 h-9"
+					>
+						No hay proyectos
+					</Button>
+				)}
+			{showProjectSelector && !isLoading && projects && projects.length > 0 && (
 				<Select
 					onValueChange={(value) => {
 						push(`/dashboard/${value}`)
@@ -84,7 +94,7 @@ export default function ProjectSelector() {
 									.filter((p: Project) => p.favorite)
 									.map((project: Project) => (
 										<SelectItem key={project.id} value={project.slug}>
-											{project.slug}
+											{project.name}
 										</SelectItem>
 									))}
 							</SelectGroup>

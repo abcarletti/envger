@@ -14,7 +14,7 @@ export function SignOut() {
 			<Button
 				type="submit"
 				size={'sm'}
-				className="w-full text-sm font-semibold"
+				className="w-full text-sm font-semibold my-1"
 			>
 				Cerrar sesión
 			</Button>

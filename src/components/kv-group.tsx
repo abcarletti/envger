@@ -7,9 +7,10 @@ import queryGetData from '@/app/services/query-request'
 import { CREDENTIALS_KEY } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { queryClient } from '@/providers/tanstack-query'
+import { decrypt } from '@/utils/encryption'
 import { Kv } from '@prisma/client'
 import { Eye, EyeOff, Pencil, Trash } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
@@ -24,8 +25,9 @@ import {
 const KvGroup = ({ groupId }: { groupId: string }) => {
 	const { setMessage } = useToast()
 	const [showPassword, setShowPassword] = useState(false)
+	const [urls, setUrls] = useState<Kv[] | null>(null)
 
-	const { data: urls, isLoading } = queryGetData<Kv[]>(
+	const { data, isLoading } = queryGetData<Kv[]>(
 		[
 			CREDENTIALS_KEY,
 			{
@@ -35,6 +37,22 @@ const KvGroup = ({ groupId }: { groupId: string }) => {
 		() => getCredentialsGroup(groupId),
 		groupId ? true : false,
 	)
+
+	useEffect(() => {
+		const decryptData = async () => {
+			if (data) {
+				const decryptedData = await Promise.all(
+					data.map(async (kv) => ({
+						...kv,
+						value: await decrypt(kv.value),
+					})),
+				)
+				setUrls(decryptedData)
+			}
+		}
+
+		if (data) decryptData()
+	}, [data])
 
 	const handleDeleteCredentials = async (kvId: string) => {
 		try {
@@ -67,7 +85,7 @@ const KvGroup = ({ groupId }: { groupId: string }) => {
 						hidden: !urls || urls.length === 0,
 					})}
 				>
-					<Label className="text-lg text-gray-400">Credenciales</Label>
+					<Label className="text-md text-gray-400">Credenciales</Label>
 					<Button
 						variant={'outline'}
 						size={'icon'}

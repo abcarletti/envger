@@ -24,6 +24,12 @@ To create a migration, run:
 npx prisma migrate dev --name [migration_name]
 ```
 
+To apply a migration, run:
+
+```bash
+npx prisma db push
+```
+
 To generate a client, run:
 
 ```bash
@@ -34,4 +40,18 @@ To execute seed scripts, run:
 
 ```bash
 npx prisma db seed
+```
+
+## Generate image
+
+To generate image, run:
+
+```bash
+docker build -t carletti/secret-notes:[VERSION] .
+```
+
+To publish image, run:
+
+```bash
+docker push carletti/secret-notes:[VERSION]
 ```

@@ -4,6 +4,7 @@ import prisma from '@/clients/prisma'
 import { auth } from '@/lib/auth'
 import { getEnvType } from '@/lib/utils'
 import { createKVSchema } from '@/schemas/kv'
+import { encrypt } from '@/utils/encryption'
 import { Env } from '@prisma/client'
 import { z } from 'zod'
 
@@ -15,6 +16,9 @@ export const createOrUpdateCredentials = async (
 	const session = await auth()
 
 	const environment: Env = getEnvType(formData.environment)
+
+	const key = formData.key
+	const value = await encrypt(formData.value)
 
 	if (kvId) {
 		return await prisma.kv.update({
@@ -28,16 +32,16 @@ export const createOrUpdateCredentials = async (
 				},
 			},
 			data: {
-				key: formData.key,
-				value: formData.value,
+				key,
+				value,
 				environment,
 			},
 		})
 	} else {
 		return await prisma.kv.create({
 			data: {
-				key: formData.key,
-				value: formData.value,
+				key,
+				value,
 				environment,
 				group: {
 					connect: {

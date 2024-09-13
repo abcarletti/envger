@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { PROJECTS_SELECTOR_KEY } from '@/lib/constants'
+import { showToast } from '@/lib/toast'
 import { getSlugByName } from '@/lib/utils'
 import { queryClient } from '@/providers/tanstack-query'
 import { createProyectSchema } from '@/schemas/project'
@@ -27,7 +28,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import { z } from 'zod'
 
 export default function CreateDashboardPage() {
@@ -54,7 +54,7 @@ export default function CreateDashboardPage() {
 				queryKey: [PROJECTS_SELECTOR_KEY],
 			})
 			push(`/dashboard/${values.slug}`)
-			toast.success('Proyecto creado correctamente')
+			showToast('Proyecto creado correctamente', 'success')
 		} catch (error) {
 			if (
 				error instanceof Error &&
@@ -65,7 +65,7 @@ export default function CreateDashboardPage() {
 					message: 'El nombre del grupo ya existe',
 				})
 			} else {
-				toast.error('Se ha producido un error al crear el proyecto')
+				showToast('Se ha producido un error al crear el proyecto', 'error')
 			}
 		}
 	}

@@ -1,13 +1,13 @@
-name: guard-notes-environment
+name: secret-notes-environment
 
 services:
   postgres:
-    container_name: guard-notes-database
+    container_name: secret-notes-database
     image: postgres:16.3-alpine
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: guard-notes
+      POSTGRES_DB: secret-notes
     volumes:
       - ./pg-data:/var/lib/postgresql/data
     ports:

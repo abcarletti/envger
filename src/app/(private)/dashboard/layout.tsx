@@ -5,13 +5,8 @@ import { SidebarDesktop } from '@/components/sidebar-desktop'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Home, Menu } from 'lucide-react'
-import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Suspense } from 'react'
-
-export const metadata: Metadata = {
-	title: 'Guard notes - Dashboard',
-}
 
 export default function DashboardLayout({
 	children,
@@ -64,7 +59,7 @@ export default function DashboardLayout({
 					</div>
 					<AvatarStatus />
 				</header>
-				{children}
+				<main className="flex flex-1 overflow-hidden p-3">{children}</main>
 			</div>
 		</div>
 	)

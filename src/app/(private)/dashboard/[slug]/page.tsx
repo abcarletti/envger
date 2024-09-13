@@ -12,6 +12,7 @@ import ProjectGroups from '@/components/project-groups'
 import { Button } from '@/components/ui/button'
 import {
 	Dialog,
+	DialogClose,
 	DialogContent,
 	DialogDescription,
 	DialogHeader,
@@ -33,7 +34,7 @@ import { queryClient } from '@/providers/tanstack-query'
 import { Project } from '@prisma/client'
 import { Settings, Star } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 
 export default function ProjectPage({
 	params: { slug },
@@ -60,7 +61,7 @@ export default function ProjectPage({
 	}
 
 	const invalidateProjectsQuery = () => {
-		queryClient.removeQueries({
+		queryClient.invalidateQueries({
 			queryKey: [PROJECT_KEY, { slug }],
 		})
 		queryClient.invalidateQueries({
@@ -113,7 +114,7 @@ export default function ProjectPage({
 								onClick={handleFavorite}
 								className={cn(
 									project.favorite ? 'text-yellow-500 fill-current' : '',
-									'size-5 cursor-pointer',
+									'size-5 cursor-pointer hover:text-yellow-500',
 								)}
 							/>
 							{/* </Button> */}
@@ -165,7 +166,20 @@ export default function ProjectPage({
 										</DialogHeader>
 										<ProjectForm
 											project={project}
+											modal={true}
 											dialogOpen={setSettingsOpen}
+											cancelButton={
+												<DialogClose asChild>
+													<Button
+														type="button"
+														size={'lg'}
+														variant={'secondary'}
+														className="w-full"
+													>
+														Cancelar
+													</Button>
+												</DialogClose>
+											}
 										/>
 									</DialogContent>
 								</Dialog>
@@ -173,7 +187,9 @@ export default function ProjectPage({
 						</div>
 					</div>
 					<div className="flex flex-1 flex-col gap-2 items-center rounded-lg mt-4 overflow-auto h-full">
-						<ProjectGroups />
+						<Suspense>
+							<ProjectGroups />
+						</Suspense>
 					</div>
 				</section>
 			)}

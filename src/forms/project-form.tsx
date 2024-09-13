@@ -21,14 +21,18 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Project } from '@prisma/client'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import React from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 const ProjectForm = ({
 	project,
+	modal,
 	dialogOpen,
 }: {
 	project?: Project
+	modal?: boolean
+	cancelButton?: React.ReactNode
 	dialogOpen: (open: boolean) => void
 }) => {
 	const { setMessage } = useToast()
@@ -153,9 +157,18 @@ const ProjectForm = ({
 					<Button type="submit" size={'lg'} className="w-full">
 						Guardar
 					</Button>
-					<Button size={'lg'} variant={'secondary'} className="w-full" asChild>
-						<Link href="/dashboard">Cancelar</Link>
-					</Button>
+					{modal ? (
+						<></>
+					) : (
+						<Button
+							size={'lg'}
+							variant={'secondary'}
+							className="w-full"
+							asChild
+						>
+							<Link href="/dashboard">Cancelar</Link>
+						</Button>
+					)}
 				</footer>
 			</form>
 		</Form>
