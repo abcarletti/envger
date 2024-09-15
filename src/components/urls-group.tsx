@@ -1,15 +1,21 @@
 'use client'
+
 import { useToast } from '@/app/hooks/use-toast'
 import { getUrlsGroup } from '@/app/services/group-service'
 import queryGetData from '@/app/services/query-request'
 import { deleteUrl } from '@/app/services/url-service'
+import UrlForm from '@/forms/url-form'
 import { URLS_KEY } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { queryClient } from '@/providers/tanstack-query'
 import { Url } from '@prisma/client'
 import { ExternalLink, Pencil, Trash } from 'lucide-react'
 import Link from 'next/link'
-import { Button } from './ui/button'
+import { useState } from 'react'
+import { twMerge } from 'tailwind-merge'
+import ConfirmDialog from './confirm-dialog'
+import DialogForm from './form-dialog'
+import { Button, buttonVariants } from './ui/button'
 import { Label } from './ui/label'
 import {
 	Select,
@@ -21,6 +27,9 @@ import {
 
 const UrlsGroup = ({ groupId }: { groupId: string }) => {
 	const { setMessage } = useToast()
+	const [openEditDialog, setOpenEditDialog] = useState(false)
+	const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
+
 	const { data: urls, isLoading } = queryGetData<Url[]>(
 		[
 			URLS_KEY,
@@ -56,7 +65,7 @@ const UrlsGroup = ({ groupId }: { groupId: string }) => {
 	}
 
 	return (
-		<div className="flex w-full p-2 items-center justify-center mt-2">
+		<div className="flex w-full p-2 items-center justify-center mt-2 py-2">
 			<div className="flex flex-col gap-2 w-full">
 				<div
 					className={cn('flex flex-col mb-2', {
@@ -67,9 +76,9 @@ const UrlsGroup = ({ groupId }: { groupId: string }) => {
 				</div>
 				{!isLoading &&
 					urls &&
-					urls.map(({ id, url, environment }) => (
-						<section key={`urls-${id}`} className="flex w-full gap-2">
-							<Select defaultValue={environment} disabled>
+					urls.map((url) => (
+						<section key={`urls-${url.id}`} className="flex w-full gap-2">
+							<Select defaultValue={url.environment} disabled>
 								<SelectTrigger className="max-w-40 p-2 h-7 disabled:cursor-default">
 									<SelectValue placeholder="Selecciona un entorno" />
 								</SelectTrigger>
@@ -87,30 +96,52 @@ const UrlsGroup = ({ groupId }: { groupId: string }) => {
 									className="justify-start h-7 pl-2"
 								>
 									<Link
-										href={url}
+										href={url.url}
 										target="_blank"
 										className="flex w-full gap-2 items-center bg-transparent"
 									>
-										{url}
+										{url.url}
 										<ExternalLink className="size-3" />
 									</Link>
 								</Button>
-								<Button
-									variant={'outline'}
-									size={'icon'}
-									className="h-7 max-w-9"
-									onClick={() => console.log('editar')}
+								<DialogForm
+									triggerText={<Pencil className="size-4" />}
+									title={`Edición URL: ${url.environment} - ${url.url}`}
+									className={twMerge(
+										buttonVariants({
+											size: 'icon',
+											variant: 'outline',
+										}),
+										'h-7 max-w-9',
+									)}
+									isDialogOpen={openEditDialog}
+									handleDialogOpen={setOpenEditDialog}
 								>
-									<Pencil className="size-4" />
-								</Button>
-								<Button
-									variant={'destructive'}
-									size={'icon'}
-									className="h-7 max-w-9"
-									onClick={() => handleDeleteUrl(id)}
-								>
-									<Trash className="size-4" />
-								</Button>
+									<UrlForm
+										groupId={groupId}
+										urlDetail={url}
+										closeDialog={() => setOpenEditDialog(false)}
+									/>
+								</DialogForm>
+								<ConfirmDialog
+									showTrigger={true}
+									buttonContent={<Trash className="size-4" />}
+									buttonStyle={twMerge(
+										buttonVariants({
+											size: 'icon',
+											variant: 'destructive',
+										}),
+										'h-7 max-w-9',
+									)}
+									title={`Eliminar URL: ${url.environment} - ${url.url}`}
+									content="¿Estás seguro de que deseas eliminar esta URL?"
+									open={openDeleteDialog}
+									onClose={() => setOpenDeleteDialog(!openDeleteDialog)}
+									onConfirm={() => {
+										handleDeleteUrl(url.id)
+										setOpenDeleteDialog(false)
+									}}
+								/>
 							</div>
 						</section>
 					))}

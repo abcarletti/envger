@@ -48,16 +48,16 @@ CREATE TABLE "groups" (
 );
 
 -- CreateTable
-CREATE TABLE "kvs" (
+CREATE TABLE "credentials" (
     "id" TEXT NOT NULL,
     "group_id" TEXT NOT NULL,
-    "key" TEXT NOT NULL,
-    "value" TEXT NOT NULL,
+    "username" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
     "environment" "Env" NOT NULL DEFAULT 'LOCAL',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "kvs_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "credentials_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -70,6 +70,17 @@ CREATE TABLE "urls" (
     "updated_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "urls_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "notes" (
+    "id" TEXT NOT NULL,
+    "group_id" TEXT NOT NULL,
+    "note" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "notes_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -100,19 +111,28 @@ CREATE INDEX "group_name" ON "groups"("name");
 CREATE UNIQUE INDEX "groups_tag_project_id_key" ON "groups"("tag", "project_id");
 
 -- CreateIndex
-CREATE INDEX "kv_group_id" ON "kvs"("group_id");
+CREATE INDEX "credentials_group_id" ON "credentials"("group_id");
 
 -- CreateIndex
 CREATE INDEX "url_group_id" ON "urls"("group_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "notes_group_id_key" ON "notes"("group_id");
+
+-- CreateIndex
+CREATE INDEX "notes_group_id" ON "notes"("group_id");
 
 -- AddForeignKey
 ALTER TABLE "projects" ADD CONSTRAINT "projects_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "groups" ADD CONSTRAINT "groups_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "projects"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "groups" ADD CONSTRAINT "groups_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "projects"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "kvs" ADD CONSTRAINT "kvs_group_id_fkey" FOREIGN KEY ("group_id") REFERENCES "groups"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "credentials" ADD CONSTRAINT "credentials_group_id_fkey" FOREIGN KEY ("group_id") REFERENCES "groups"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "urls" ADD CONSTRAINT "urls_group_id_fkey" FOREIGN KEY ("group_id") REFERENCES "groups"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "urls" ADD CONSTRAINT "urls_group_id_fkey" FOREIGN KEY ("group_id") REFERENCES "groups"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "notes" ADD CONSTRAINT "notes_group_id_fkey" FOREIGN KEY ("group_id") REFERENCES "groups"("id") ON DELETE CASCADE ON UPDATE CASCADE;

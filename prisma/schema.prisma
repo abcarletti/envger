@@ -57,16 +57,17 @@ model Project {
 }
 
 model Group {
-  id          String   @id @default(uuid())
-  project     Project  @relation(fields: [projectId], references: [id])
-  projectId   String   @map("project_id")
+  id          String        @id @default(uuid())
+  project     Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId   String        @map("project_id")
   tag         String
   name        String
   description String?
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-  KV          Kv[]
-  URL         Url[]
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  credentials Credentials[]
+  urls        Url[]
+  notes       Note?
 
   @@unique([tag, projectId], name: "tag_project_id")
   @@index([projectId], name: "project_id")
@@ -74,23 +75,23 @@ model Group {
   @@map("groups")
 }
 
-model Kv {
+model Credentials {
   id          String   @id @default(uuid())
-  group       Group    @relation(fields: [groupId], references: [id])
+  group       Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
   groupId     String   @map("group_id")
-  key         String
-  value       String
+  username    String
+  password    String
   environment Env      @default(LOCAL)
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  @@index([groupId], name: "kv_group_id")
-  @@map("kvs")
+  @@index([groupId], name: "credentials_group_id")
+  @@map("credentials")
 }
 
 model Url {
   id          String   @id @default(uuid())
-  group       Group    @relation(fields: [groupId], references: [id])
+  group       Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
   groupId     String   @map("group_id")
   url         String
   environment Env      @default(LOCAL)
@@ -99,4 +100,16 @@ model Url {
 
   @@index([groupId], name: "url_group_id")
   @@map("urls")
+}
+
+model Note {
+  id        String   @id @default(uuid())
+  group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId   String   @unique @map("group_id")
+  note      String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([groupId], name: "notes_group_id")
+  @@map("notes")
 }

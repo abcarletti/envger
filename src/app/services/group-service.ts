@@ -2,7 +2,7 @@
 
 import prisma from '@/clients/prisma'
 import { auth } from '@/lib/auth'
-import { Kv, Url } from '@prisma/client'
+import { Credentials, Url } from '@prisma/client'
 
 export const getUrlsGroup = async (groupId: string): Promise<Url[]> => {
 	const session = await auth()
@@ -22,10 +22,12 @@ export const getUrlsGroup = async (groupId: string): Promise<Url[]> => {
 	})
 }
 
-export const getCredentialsGroup = async (groupId: string): Promise<Kv[]> => {
+export const getCredentialsGroup = async (
+	groupId: string,
+): Promise<Credentials[]> => {
 	const session = await auth()
 
-	return prisma.kv.findMany({
+	return prisma.credentials.findMany({
 		where: {
 			groupId,
 			group: {

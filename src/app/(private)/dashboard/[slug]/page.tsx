@@ -8,8 +8,9 @@ import {
 	setFavoriteProject,
 } from '@/app/services/server-actions'
 import AddGroupButtom from '@/components/add-group-buttom'
+import ConfirmDialog from '@/components/confirm-dialog'
 import ProjectGroups from '@/components/project-groups'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import {
 	Dialog,
 	DialogClose,
@@ -35,6 +36,7 @@ import { Project } from '@prisma/client'
 import { Settings, Star } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Suspense, useEffect, useState } from 'react'
+import { twMerge } from 'tailwind-merge'
 
 export default function ProjectPage({
 	params: { slug },
@@ -47,6 +49,7 @@ export default function ProjectPage({
 		undefined,
 	)
 	const [settingsOpen, setSettingsOpen] = useState(false)
+	const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
 
 	const { data: project, isLoading: isLoadingProjects } =
 		queryGetData<Project | null>(
@@ -85,7 +88,8 @@ export default function ProjectPage({
 		}
 	}, [project])
 
-	const handleDeleteProject = async (projectId: string) => {
+	const handleDeleteProject = async (projectId: string | undefined) => {
+		if (!projectId) return
 		try {
 			await deleteProject(projectId)
 			setMessage({
@@ -150,7 +154,7 @@ export default function ProjectPage({
 													size={'sm'}
 													variant={'destructive'}
 													className="w-full"
-													onClick={() => handleDeleteProject(project.id)}
+													onClick={() => setOpenDeleteDialog(true)}
 												>
 													Eliminar
 												</Button>
@@ -193,6 +197,31 @@ export default function ProjectPage({
 					</div>
 				</section>
 			)}
+			<ConfirmDialog
+				showTrigger={false}
+				buttonContent={'Eliminar'}
+				buttonStyle={twMerge(
+					buttonVariants({
+						size: 'sm',
+						variant: 'destructive',
+					}),
+					'w-full',
+				)}
+				title={`¿Deseas eliminar el proyecto ${project?.name}?`}
+				content={
+					<>
+						¿Estás seguro de que deseas eliminar el proyecto{' '}
+						<span className="uppercase text-primary">{project?.name}</span> y
+						toda la información relacionada? Si confirma no se podrá recuperar.
+					</>
+				}
+				open={openDeleteDialog}
+				onClose={() => setOpenDeleteDialog(!openDeleteDialog)}
+				onConfirm={() => {
+					handleDeleteProject(project?.id)
+					setOpenDeleteDialog(false)
+				}}
+			/>
 		</>
 	)
 }

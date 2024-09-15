@@ -1,7 +1,7 @@
 'use client'
 
 import { useToast } from '@/app/hooks/use-toast'
-import { createOrUpdateCredentials } from '@/app/services/kv-service'
+import { createOrUpdateCredentials } from '@/app/services/credentials-service'
 import { Button } from '@/components/ui/button'
 import {
 	Form,
@@ -22,39 +22,39 @@ import {
 } from '@/components/ui/select'
 import { CREDENTIALS_KEY } from '@/lib/constants'
 import { queryClient } from '@/providers/tanstack-query'
-import { createKVSchema } from '@/schemas/kv'
+import { createCredentialsSchema } from '@/schemas/credentials'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Kv } from '@prisma/client'
+import { Credentials } from '@prisma/client'
 import { Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-const KVForm = ({
-	kvDetail,
+const CredentialsForm = ({
+	credentialsDetail,
 	groupId,
 	closeDialog,
 }: {
-	kvDetail?: Kv
+	credentialsDetail?: Credentials
 	groupId: string
 	closeDialog: () => void
 }) => {
 	const { setMessage } = useToast()
-	const [showPassword, setShowPassword] = useState(false)
+	const [showPassword, setShowPassword] = useState(!!credentialsDetail)
 
-	const form = useForm<z.infer<typeof createKVSchema>>({
-		resolver: zodResolver(createKVSchema),
+	const form = useForm<z.infer<typeof createCredentialsSchema>>({
+		resolver: zodResolver(createCredentialsSchema),
 		defaultValues: {
-			key: kvDetail?.key || '',
-			value: kvDetail?.value || '',
-			environment: kvDetail?.environment || '',
+			username: credentialsDetail?.username || '',
+			password: credentialsDetail?.password || '',
+			environment: credentialsDetail?.environment || '',
 		},
 	})
 	const { reset } = form
 
-	const onSubmit = async (values: z.infer<typeof createKVSchema>) => {
+	const onSubmit = async (values: z.infer<typeof createCredentialsSchema>) => {
 		try {
-			await createOrUpdateCredentials(kvDetail?.id, groupId, values)
+			await createOrUpdateCredentials(credentialsDetail?.id, groupId, values)
 			await queryClient.invalidateQueries({
 				queryKey: [
 					CREDENTIALS_KEY,
@@ -65,7 +65,7 @@ const KVForm = ({
 			})
 			reset()
 			setMessage({
-				message: kvDetail
+				message: credentialsDetail
 					? 'Credenciales actualizadas'
 					: 'Credenciales creadas',
 				type: 'success',
@@ -116,7 +116,7 @@ const KVForm = ({
 					<div className="flex gap-2">
 						<FormField
 							control={form.control}
-							name="key"
+							name="username"
 							render={({ field }) => (
 								<FormItem className="w-full">
 									<FormLabel>Usuario</FormLabel>
@@ -129,7 +129,7 @@ const KVForm = ({
 						/>
 						<FormField
 							control={form.control}
-							name="value"
+							name="password"
 							render={({ field }) => (
 								<FormItem className="w-full">
 									<FormLabel>Contraseña</FormLabel>
@@ -138,7 +138,7 @@ const KVForm = ({
 											<Input
 												className="relative"
 												type={showPassword ? 'text' : 'password'}
-												placeholder="Constraseña"
+												placeholder="Contraseña"
 												{...field}
 											/>
 											<Button
@@ -164,7 +164,7 @@ const KVForm = ({
 				</div>
 				<footer className="flex flex-row-reverse mt-4 gap-2">
 					<Button type="submit" size={'lg'} className="w-full">
-						{kvDetail ? 'Actualizar' : 'Guardar'}
+						{credentialsDetail ? 'Actualizar' : 'Guardar'}
 					</Button>
 					<Button
 						size={'lg'}
@@ -180,4 +180,4 @@ const KVForm = ({
 	)
 }
 
-export default KVForm
+export default CredentialsForm

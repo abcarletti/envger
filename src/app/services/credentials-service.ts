@@ -3,27 +3,27 @@
 import prisma from '@/clients/prisma'
 import { auth } from '@/lib/auth'
 import { getEnvType } from '@/lib/utils'
-import { createKVSchema } from '@/schemas/kv'
+import { createCredentialsSchema } from '@/schemas/credentials'
 import { encrypt } from '@/utils/encryption'
 import { Env } from '@prisma/client'
 import { z } from 'zod'
 
 export const createOrUpdateCredentials = async (
-	kvId: string | undefined,
+	credentialsId: string | undefined,
 	groupId: string,
-	formData: z.infer<typeof createKVSchema>,
+	formData: z.infer<typeof createCredentialsSchema>,
 ) => {
 	const session = await auth()
 
 	const environment: Env = getEnvType(formData.environment)
 
-	const key = formData.key
-	const value = await encrypt(formData.value)
+	const username = formData.username
+	const password = await encrypt(formData.password)
 
-	if (kvId) {
-		return await prisma.kv.update({
+	if (credentialsId) {
+		return await prisma.credentials.update({
 			where: {
-				id: kvId,
+				id: credentialsId,
 				group: {
 					id: groupId,
 					project: {
@@ -32,16 +32,16 @@ export const createOrUpdateCredentials = async (
 				},
 			},
 			data: {
-				key,
-				value,
+				username,
+				password,
 				environment,
 			},
 		})
 	} else {
-		return await prisma.kv.create({
+		return await prisma.credentials.create({
 			data: {
-				key,
-				value,
+				username,
+				password,
 				environment,
 				group: {
 					connect: {
@@ -56,10 +56,10 @@ export const createOrUpdateCredentials = async (
 	}
 }
 
-export const deleteCredentials = async (kvId: string) => {
-	return await prisma.kv.delete({
+export const deleteCredentials = async (credentialsId: string) => {
+	return await prisma.credentials.delete({
 		where: {
-			id: kvId,
+			id: credentialsId,
 		},
 	})
 }

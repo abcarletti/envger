@@ -1,17 +1,21 @@
 'use client'
 
 import { useToast } from '@/app/hooks/use-toast'
+import { deleteCredentials } from '@/app/services/credentials-service'
 import { getCredentialsGroup } from '@/app/services/group-service'
-import { deleteCredentials } from '@/app/services/kv-service'
 import queryGetData from '@/app/services/query-request'
+import CredentialsForm from '@/forms/credentials-form'
 import { CREDENTIALS_KEY } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { queryClient } from '@/providers/tanstack-query'
 import { decrypt } from '@/utils/encryption'
-import { Kv } from '@prisma/client'
+import { Credentials } from '@prisma/client'
 import { Eye, EyeOff, Pencil, Trash } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { Button } from './ui/button'
+import { twMerge } from 'tailwind-merge'
+import ConfirmDialog from './confirm-dialog'
+import DialogForm from './form-dialog'
+import { Button, buttonVariants } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
 import {
@@ -22,12 +26,16 @@ import {
 	SelectValue,
 } from './ui/select'
 
-const KvGroup = ({ groupId }: { groupId: string }) => {
+const CredentialsGroup = ({ groupId }: { groupId: string }) => {
 	const { setMessage } = useToast()
 	const [showPassword, setShowPassword] = useState(false)
-	const [urls, setUrls] = useState<Kv[] | null>(null)
+	const [credentialsList, setCredentialsList] = useState<Credentials[] | null>(
+		null,
+	)
+	const [openEditDialog, setOpenEditDialog] = useState(false)
+	const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
 
-	const { data, isLoading } = queryGetData<Kv[]>(
+	const { data, isLoading } = queryGetData<Credentials[]>(
 		[
 			CREDENTIALS_KEY,
 			{
@@ -42,21 +50,22 @@ const KvGroup = ({ groupId }: { groupId: string }) => {
 		const decryptData = async () => {
 			if (data) {
 				const decryptedData = await Promise.all(
-					data.map(async (kv) => ({
-						...kv,
-						value: await decrypt(kv.value),
+					data?.map(async (credentials) => ({
+						...credentials,
+						password: await decrypt(credentials.password),
 					})),
 				)
-				setUrls(decryptedData)
+				console.log(decryptedData)
+				setCredentialsList(decryptedData)
 			}
 		}
 
-		if (data) decryptData()
+		decryptData()
 	}, [data])
 
-	const handleDeleteCredentials = async (kvId: string) => {
+	const handleDeleteCredentials = async (credentialsId: string) => {
 		try {
-			await deleteCredentials(kvId)
+			await deleteCredentials(credentialsId)
 			await queryClient.invalidateQueries({
 				queryKey: [
 					CREDENTIALS_KEY,
@@ -82,7 +91,7 @@ const KvGroup = ({ groupId }: { groupId: string }) => {
 			<div className="flex flex-col gap-2 w-full">
 				<div
 					className={cn('flex gap-3 mb-2', {
-						hidden: !urls || urls.length === 0,
+						hidden: !credentialsList || credentialsList.length === 0,
 					})}
 				>
 					<Label className="text-md text-gray-400">Credenciales</Label>
@@ -101,10 +110,10 @@ const KvGroup = ({ groupId }: { groupId: string }) => {
 					</Button>
 				</div>
 				{!isLoading &&
-					urls &&
-					urls.map(({ id, key, value, environment }) => (
-						<section key={id} className="flex w-full gap-2">
-							<Select defaultValue={environment} disabled>
+					credentialsList &&
+					credentialsList?.map((credential) => (
+						<section key={credential.id} className="flex w-full gap-2">
+							<Select defaultValue={credential.environment} disabled>
 								<SelectTrigger className="max-w-40 p-2 h-7 disabled:cursor-default">
 									<SelectValue placeholder="Selecciona un entorno" />
 								</SelectTrigger>
@@ -118,7 +127,7 @@ const KvGroup = ({ groupId }: { groupId: string }) => {
 							<div className="flex gap-2 w-full">
 								<Input
 									readOnly
-									value={key}
+									value={credential.username}
 									className="justify-start h-7 pl-2 cursor-pointer"
 									placeholder="Nombre"
 									onClick={() => {
@@ -126,12 +135,12 @@ const KvGroup = ({ groupId }: { groupId: string }) => {
 											type: 'success',
 											message: 'El texto ha sido copiado al portapapeles',
 										})
-										navigator.clipboard.writeText(key)
+										navigator.clipboard.writeText(credential.username)
 									}}
 								/>
 								<Input
 									readOnly
-									value={value}
+									value={credential.password}
 									className="justify-start h-7 pl-2 cursor-pointer"
 									placeholder="Contraseña"
 									type={showPassword ? 'text' : 'password'}
@@ -140,25 +149,47 @@ const KvGroup = ({ groupId }: { groupId: string }) => {
 											type: 'success',
 											message: 'El texto ha sido copiado al portapapeles',
 										})
-										navigator.clipboard.writeText(value)
+										navigator.clipboard.writeText(credential.password)
 									}}
 								/>
-								<Button
-									variant={'outline'}
-									size={'icon'}
-									className="h-7 min-w-9"
-									onClick={() => console.log('editar')}
+								<DialogForm
+									triggerText={<Pencil className="size-4" />}
+									title={`Edición URL:`}
+									className={twMerge(
+										buttonVariants({
+											size: 'icon',
+											variant: 'outline',
+										}),
+										'h-7 min-w-7',
+									)}
+									isDialogOpen={openEditDialog}
+									handleDialogOpen={setOpenEditDialog}
 								>
-									<Pencil className="size-4" />
-								</Button>
-								<Button
-									variant={'destructive'}
-									size={'icon'}
-									className="h-7 min-w-8"
-									onClick={() => handleDeleteCredentials(id)}
-								>
-									<Trash className="size-4" />
-								</Button>
+									<CredentialsForm
+										groupId={groupId}
+										credentialsDetail={credential}
+										closeDialog={() => setOpenEditDialog(false)}
+									/>
+								</DialogForm>
+								<ConfirmDialog
+									showTrigger={true}
+									buttonContent={<Trash className="size-4" />}
+									buttonStyle={twMerge(
+										buttonVariants({
+											size: 'icon',
+											variant: 'destructive',
+										}),
+										'h-7 min-w-7',
+									)}
+									title={`Eliminar credenciales`}
+									content="¿Estás seguro de que deseas eliminar estas credenciales?"
+									open={openDeleteDialog}
+									onClose={() => setOpenDeleteDialog(!openDeleteDialog)}
+									onConfirm={() => {
+										handleDeleteCredentials(credential.id)
+										setOpenDeleteDialog(false)
+									}}
+								/>
 							</div>
 						</section>
 					))}
@@ -167,4 +198,4 @@ const KvGroup = ({ groupId }: { groupId: string }) => {
 	)
 }
 
-export default KvGroup
+export default CredentialsGroup

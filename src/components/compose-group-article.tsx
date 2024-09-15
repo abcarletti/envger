@@ -1,11 +1,14 @@
+import CredentialsForm from '@/forms/credentials-form'
 import { GroupForm } from '@/forms/group-form'
-import KVForm from '@/forms/kv-form'
 import UrlForm from '@/forms/url-form'
 import { Group } from '@prisma/client'
 import { Settings } from 'lucide-react'
 import { Suspense, useState } from 'react'
+import { twMerge } from 'tailwind-merge'
+import ConfirmDialog from './confirm-dialog'
+import CredentialsGroup from './credentials-group'
 import DialogForm from './form-dialog'
-import KvGroup from './kv-group'
+import NotesGroup from './notes-group'
 import { Button, buttonVariants } from './ui/button'
 import {
 	Dialog,
@@ -37,7 +40,8 @@ export default function GroupArticle({
 }) {
 	const [dialogOpen, setDialogOpen] = useState(false)
 	const [openUrlDialog, setOpenUrlDialog] = useState(false)
-	const [openKVDialog, setOpenKVDialog] = useState(false)
+	const [openCredentialsDialog, setOpenCredentialsDialog] = useState(false)
+	const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
 	const { name, description } = group
 
 	const closeDialog = () => {
@@ -46,113 +50,154 @@ export default function GroupArticle({
 	}
 
 	return (
-		<article className="flex flex-col xl:flex-1 items-center min-h-24 bg-muted/30 border-[1px] border-muted rounded-lg py-2 xl:max-w-group">
-			<div className="flex flex-1 w-full justify-between px-4">
-				<div className="flex flex-col gap-[4px] w-full">
-					<Label className="text-xl">{name}</Label>
-					{description && (
-						<Label className="text-sm text-gray-400">{description}</Label>
-					)}
-					<Separator className="flex bg-primary w-2/12" />
-				</div>
-				<div className="">
-					<Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-						<DropdownMenu>
-							<DropdownMenuTrigger className="flex items-center focus:outline-none mt-2">
-								<Settings className="size-4" />
-							</DropdownMenuTrigger>
-							<DropdownMenuContent>
-								<DropdownMenuItem className="p-0">
-									<DialogTrigger className="w-full" asChild>
-										<Button size={'sm'} variant={'ghost'} className="w-full">
-											Editar
+		<>
+			<article className="flex flex-col xl:flex-1 items-center min-h-24 bg-muted/30 border-[1px] border-muted rounded-lg py-2 xl:max-w-group">
+				<div className="flex flex-1 w-full justify-between px-4">
+					<div className="flex flex-col gap-[4px] w-full">
+						<Label className="text-xl">{name}</Label>
+						{description && (
+							<Label className="text-sm text-gray-400">{description}</Label>
+						)}
+						<Separator className="flex bg-primary w-2/12" />
+					</div>
+					<div className="">
+						<Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+							<DropdownMenu>
+								<DropdownMenuTrigger className="flex items-center focus:outline-none mt-2">
+									<Settings className="size-4" />
+								</DropdownMenuTrigger>
+								<DropdownMenuContent>
+									<DropdownMenuItem className="p-0">
+										<DialogTrigger className="w-full" asChild>
+											<Button size={'sm'} variant={'ghost'} className="w-full">
+												Editar
+											</Button>
+										</DialogTrigger>
+									</DropdownMenuItem>
+									<DropdownMenuItem className="p-0">
+										<Button
+											size={'sm'}
+											variant={'destructive'}
+											className="w-full"
+											onClick={() => setOpenDeleteDialog(true)}
+										>
+											Eliminar
 										</Button>
-									</DialogTrigger>
-								</DropdownMenuItem>
-								<DropdownMenuItem className="p-0">
-									<Button
-										size={'sm'}
-										variant={'destructive'}
-										className="w-full"
-										onClick={handleDeleteGroup}
-									>
-										Eliminar
-									</Button>
-								</DropdownMenuItem>
-							</DropdownMenuContent>
-						</DropdownMenu>
-						<DialogContent className="sm:max-w-md">
-							<DialogHeader>
-								<DialogTitle>Editar grupo: {group.name}</DialogTitle>
-								<DialogDescription>
-									Modifica los valores del grupo
-								</DialogDescription>
-							</DialogHeader>
-							<GroupForm group={group} dialogOpen={closeDialog} />
-						</DialogContent>
-					</Dialog>
+									</DropdownMenuItem>
+								</DropdownMenuContent>
+							</DropdownMenu>
+							<DialogContent className="sm:max-w-md">
+								<DialogHeader>
+									<DialogTitle>Editar grupo: {group.name}</DialogTitle>
+									<DialogDescription>
+										Modifica los valores del grupo
+									</DialogDescription>
+								</DialogHeader>
+								<GroupForm group={group} dialogOpen={closeDialog} />
+							</DialogContent>
+						</Dialog>
+					</div>
 				</div>
-			</div>
-			<Suspense
-				fallback={
-					<div className="flex w-full p-2">
-						<section className="flex w-full gap-2">
-							<Skeleton className="h-8 min-w-44 bg-primary/40" />
-							<div className="flex w-full">
-								<Skeleton className="h-8 w-full bg-primary/40" />
-							</div>
-						</section>
-					</div>
-				}
-			>
-				<UrlsGroup groupId={group.id} />
-			</Suspense>
-			<Suspense
-				fallback={
-					<div className="flex w-full p-2">
-						<section className="flex w-full gap-2">
-							<Skeleton className="h-8 min-w-44 bg-primary/40" />
-							<div className="flex w-full">
-								<Skeleton className="h-8 w-full bg-primary/40" />
-							</div>
-						</section>
-					</div>
-				}
-			>
-				<KvGroup groupId={group.id} />
-			</Suspense>
-			<footer className="flex justify-end gap-2 pt-4 text-primary">
-				<DialogForm
-					triggerText="Añadir URL"
-					title={`Crear URL del grupo: ${group.name}`}
-					className={buttonVariants({
-						size: 'sm',
-						variant: 'outline',
-					})}
-					isDialogOpen={openUrlDialog}
-					handleDialogOpen={setOpenUrlDialog}
+				<Suspense
+					fallback={
+						<div className="flex w-full p-2">
+							<section className="flex w-full gap-2">
+								<Skeleton className="h-8 min-w-44 bg-primary/40" />
+								<div className="flex w-full">
+									<Skeleton className="h-8 w-full bg-primary/40" />
+								</div>
+							</section>
+						</div>
+					}
 				>
-					<UrlForm
-						groupId={group.id}
-						closeDialog={() => setOpenUrlDialog(false)}
-					/>
-				</DialogForm>
-				<DialogForm
-					triggerText="Añadir credenciales"
-					title={`Crear credenciales del grupo: ${group.name}`}
-					className={buttonVariants({
-						size: 'sm',
-						variant: 'outline',
-					})}
-					isDialogOpen={openKVDialog}
-					handleDialogOpen={setOpenKVDialog}
+					<UrlsGroup groupId={group.id} />
+				</Suspense>
+				<Suspense
+					fallback={
+						<div className="flex w-full p-2">
+							<section className="flex w-full gap-2">
+								<Skeleton className="h-8 min-w-44 bg-primary/40" />
+								<div className="flex w-full">
+									<Skeleton className="h-8 w-full bg-primary/40" />
+								</div>
+							</section>
+						</div>
+					}
 				>
-					<KVForm
-						groupId={group.id}
-						closeDialog={() => setOpenKVDialog(false)}
-					/>
-				</DialogForm>
-			</footer>
-		</article>
+					<CredentialsGroup groupId={group.id} />
+				</Suspense>
+				<Suspense
+					fallback={
+						<div className="flex w-full p-2">
+							<section className="flex w-full gap-2">
+								<Skeleton className="h-8 min-w-44 bg-primary/40" />
+								<div className="flex w-full">
+									<Skeleton className="h-8 w-full bg-primary/40" />
+								</div>
+							</section>
+						</div>
+					}
+				>
+					<NotesGroup groupId={group.id} />
+				</Suspense>
+				<footer className="flex justify-end gap-2 pt-4 text-primary">
+					<DialogForm
+						triggerText={'Añadir URL'}
+						title={`Crear URL del grupo: ${group.name}`}
+						className={buttonVariants({
+							size: 'sm',
+							variant: 'outline',
+						})}
+						isDialogOpen={openUrlDialog}
+						handleDialogOpen={setOpenUrlDialog}
+					>
+						<UrlForm
+							groupId={group.id}
+							closeDialog={() => setOpenUrlDialog(false)}
+						/>
+					</DialogForm>
+					<DialogForm
+						triggerText={'Añadir credenciales'}
+						title={`Crear credenciales del grupo: ${group.name}`}
+						className={buttonVariants({
+							size: 'sm',
+							variant: 'outline',
+						})}
+						isDialogOpen={openCredentialsDialog}
+						handleDialogOpen={setOpenCredentialsDialog}
+					>
+						<CredentialsForm
+							groupId={group.id}
+							closeDialog={() => setOpenCredentialsDialog(false)}
+						/>
+					</DialogForm>
+				</footer>
+			</article>
+			<ConfirmDialog
+				showTrigger={false}
+				buttonContent={'Eliminar'}
+				buttonStyle={twMerge(
+					buttonVariants({
+						size: 'sm',
+						variant: 'destructive',
+					}),
+					'w-full',
+				)}
+				title={`¿Deseas eliminar el grupo ${group.name}?`}
+				content={
+					<>
+						¿Estás seguro de que deseas eliminar el grupo{' '}
+						<span className="uppercase text-primary">{group.name}</span> y toda
+						la información relacionada? Si confirma no se podrá recuperar.
+					</>
+				}
+				open={openDeleteDialog}
+				onClose={() => setOpenDeleteDialog(!openDeleteDialog)}
+				onConfirm={() => {
+					handleDeleteGroup()
+					setOpenDeleteDialog(false)
+				}}
+			/>
+		</>
 	)
 }

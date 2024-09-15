@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils'
+import { ReactElement } from 'react'
 import {
 	Dialog,
 	DialogContent,
@@ -9,7 +10,7 @@ import {
 } from './ui/dialog'
 
 interface Props {
-	triggerText: string
+	triggerText: ReactElement | string
 	className?: string
 	title: string
 	description?: string
