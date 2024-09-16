@@ -81,9 +81,14 @@ export default function DashboardPage() {
 										href={`/dashboard/${project.slug}`}
 										className="text-foreground w-full hover:text-foreground/70"
 									>
-										<Label className="text-md cursor-pointer">
-											{project.name}
-										</Label>
+										<div className="flex gap-4 min-w-0 items-center">
+											<Label className="text-md cursor-pointer">
+												{project.name}
+											</Label>
+											<p className="text-sm text-gray-400">
+												{project.description}
+											</p>
+										</div>
 									</Link>
 								</div>
 							))}
