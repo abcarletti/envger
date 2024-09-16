@@ -79,7 +79,7 @@ export default function ProjectSelector() {
 							projects?.find((p: Project) => p.slug === value),
 						)
 					}}
-					value={project?.slug || ''}
+					value={project?.name || ''}
 				>
 					<SelectTrigger className="w-min min-w-60">
 						<SelectValue placeholder="Selecciona un proyecto" />
