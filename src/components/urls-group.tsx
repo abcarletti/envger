@@ -77,7 +77,10 @@ const UrlsGroup = ({ groupId }: { groupId: string }) => {
 				{!isLoading &&
 					urls &&
 					urls.map((url) => (
-						<section key={`urls-${url.id}`} className="flex w-full gap-2">
+						<section
+							key={`urls-${url.id}`}
+							className="flex w-full gap-2 flex-col md:flex-row"
+						>
 							<Select defaultValue={url.environment} disabled>
 								<SelectTrigger className="max-w-40 p-2 h-7 disabled:cursor-default">
 									<SelectValue placeholder="Selecciona un entorno" />

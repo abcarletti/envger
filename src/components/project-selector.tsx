@@ -81,7 +81,7 @@ export default function ProjectSelector() {
 					}}
 					value={project?.slug || ''}
 				>
-					<SelectTrigger className="w-min min-w-60">
+					<SelectTrigger className="w-min min-w-52">
 						<SelectValue placeholder="Selecciona un proyecto" />
 					</SelectTrigger>
 					<SelectContent>

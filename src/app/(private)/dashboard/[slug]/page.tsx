@@ -111,83 +111,82 @@ export default function ProjectPage({
 		<>
 			{isLoadingProjects && <Skeleton className="bg-primary/80 min-w-56 h-9" />}
 			{!isLoadingProjects && project && (
-				<section className="flex flex-col flex-1 overflow-hidden h-full w-full">
+				<section className="flex flex-col flex-1 overflow-hidden h-full">
 					<div className="flex justify-between">
-						<div className="flex gap-3 items-center">
-							<Star
-								onClick={handleFavorite}
-								className={cn(
-									project.favorite ? 'text-yellow-500 fill-current' : '',
-									'size-5 cursor-pointer hover:text-yellow-500',
-								)}
-							/>
-							{/* </Button> */}
-							<Label className="text-2xl uppercase">{project.name}</Label>
-							<div className="flex items-end flex-1 h-full ml-2 mb-[4px]">
+						<div className="grid grid-cols-2 md:flex gap-3 flex-col md:flex-row md:items-center">
+							<div className="flex gap-3 items-center">
+								<Star
+									onClick={handleFavorite}
+									className={cn(
+										project.favorite ? 'text-yellow-500 fill-current' : '',
+										'size-5 cursor-pointer hover:text-yellow-500',
+									)}
+								/>
+								<Label className="text-2xl uppercase">{project.name}</Label>
+							</div>
+							<div className="flex items-end md:max-w-full h-full md:ml-2 mb-[4px] text-balance">
 								<Label className="text-[0.7rem] text-gray-400">
-									{project.description}
+									{project?.description?.substring(0, 90)}
 								</Label>
 							</div>
 						</div>
-						<div className="flex pl-8 items-center">
-							<div className="flex gap-3 items-center">
-								<AddGroupButtom />
-								<Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
-									<DropdownMenu>
-										<DropdownMenuTrigger className="flex items-center focus:outline-none h-7">
-											<Settings className="size-4" />
-										</DropdownMenuTrigger>
-										<DropdownMenuContent>
-											<DropdownMenuItem className="p-0">
-												<DialogTrigger className="w-full" asChild>
-													<Button
-														size={'sm'}
-														variant={'ghost'}
-														className="w-full"
-													>
-														Editar
-													</Button>
-												</DialogTrigger>
-											</DropdownMenuItem>
-											<DropdownMenuItem className="p-0">
+						<div className="flex md:pl-8 items-center gap-3">
+							<AddGroupButtom />
+							<Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
+								<DropdownMenu>
+									<DropdownMenuTrigger className="flex items-center focus:outline-none h-7">
+										<Settings className="size-4" />
+									</DropdownMenuTrigger>
+									<DropdownMenuContent>
+										<DropdownMenuItem className="p-0">
+											<DialogTrigger className="w-full" asChild>
 												<Button
 													size={'sm'}
-													variant={'destructive'}
+													variant={'ghost'}
 													className="w-full"
-													onClick={() => setOpenDeleteDialog(true)}
 												>
-													Eliminar
+													Editar
 												</Button>
-											</DropdownMenuItem>
-										</DropdownMenuContent>
-									</DropdownMenu>
-									<DialogContent className="sm:max-w-md">
-										<DialogHeader>
-											<DialogTitle>Editar proyecto: {project.name}</DialogTitle>
-											<DialogDescription>
-												Modifica los valores del proyecto
-											</DialogDescription>
-										</DialogHeader>
-										<ProjectForm
-											project={project}
-											modal={true}
-											dialogOpen={setSettingsOpen}
-											cancelButton={
-												<DialogClose asChild>
-													<Button
-														type="button"
-														size={'lg'}
-														variant={'secondary'}
-														className="w-full"
-													>
-														Cancelar
-													</Button>
-												</DialogClose>
-											}
-										/>
-									</DialogContent>
-								</Dialog>
-							</div>
+											</DialogTrigger>
+										</DropdownMenuItem>
+										<DropdownMenuItem className="p-0">
+											<Button
+												size={'sm'}
+												variant={'destructive'}
+												className="w-full"
+												onClick={() => setOpenDeleteDialog(true)}
+											>
+												Eliminar
+											</Button>
+										</DropdownMenuItem>
+									</DropdownMenuContent>
+								</DropdownMenu>
+								<DialogContent className="sm:max-w-md">
+									<DialogHeader>
+										<DialogTitle>Editar proyecto: {project.name}</DialogTitle>
+										<DialogDescription>
+											Modifica los valores del proyecto
+										</DialogDescription>
+									</DialogHeader>
+									<ProjectForm
+										project={project}
+										modal={true}
+										dialogOpen={setSettingsOpen}
+										cancelButton={
+											<DialogClose asChild>
+												<Button
+													type="button"
+													size={'lg'}
+													variant={'secondary'}
+													className="w-full"
+												>
+													Cancelar
+												</Button>
+											</DialogClose>
+										}
+									/>
+								</DialogContent>
+							</Dialog>
 						</div>
 					</div>
 					<div className="flex flex-1 flex-col gap-2 items-center rounded-lg mt-4 overflow-auto h-full">

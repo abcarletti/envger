@@ -2,7 +2,6 @@
 
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import LogoButtom from './logo-buttom'
 import { SidebarGroupsNav } from './sidebar-nav'
 
 export const SidebarDesktop = () => {
@@ -18,9 +17,8 @@ export const SidebarDesktop = () => {
 	}, [pathname])
 
 	return (
-		<div className="hidden border-r bg-background md:block">
+		<div className="border-r bg-background hidden md:block">
 			<div className="flex h-full max-h-screen flex-col gap-2">
-				<LogoButtom />
 				{loadGroups && <SidebarGroupsNav />}
 			</div>
 		</div>
