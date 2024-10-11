@@ -1,4 +1,4 @@
-import { PrismaClient, Provider } from '@prisma/client'
+import { PrismaClient, Provider, Role } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 import { exec } from 'child_process'
 import dotenv from 'dotenv'
@@ -26,7 +26,7 @@ async function applyMigrations() {
 }
 
 async function createDefaultUser() {
-	const defaultUsername = process.env.DEFAULT_USERNAME
+	const defaultUsername = process.env.APP_ADMIN_USERNAME
 	console.log('defaultUsername', defaultUsername)
 
 	if (!defaultUsername) {
@@ -43,7 +43,7 @@ async function createDefaultUser() {
 		return
 	}
 
-	const defaultPassword = process.env.DEFAULT_PASSWORD || ''
+	const defaultPassword = process.env.APP_ADMIN_PASSWORD || ''
 
 	if (!defaultPassword) {
 		console.log('No default password provided')
@@ -52,6 +52,7 @@ async function createDefaultUser() {
 
 	await prisma.user.create({
 		data: {
+			role: Role.ADMIN,
 			provider: Provider.CREDENTIALS,
 			username: defaultUsername,
 			password: await bcrypt.hash(defaultPassword, 10),

@@ -17,7 +17,7 @@ const LogoButtom = () => {
 						)}
 					>
 						<span className="text-primary text-2xl">{'<'}</span>
-						SecretNotes
+						Envger
 						<span className="text-primary"> {'/>'}</span>
 					</h1>
 				</Link>

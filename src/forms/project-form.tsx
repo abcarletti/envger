@@ -5,18 +5,18 @@ import { createOrUpdateProject } from '@/app/services/server-actions'
 import { AutosizeTextarea } from '@/components/ui/autosize-textarea'
 import { Button } from '@/components/ui/button'
 import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { PROJECT_KEY, PROJECTS_SELECTOR_KEY } from '@/lib/constants'
 import { getTagByName } from '@/lib/utils'
 import { queryClient } from '@/providers/tanstack-query'
-import { createProyectSchema } from '@/schemas/project'
+import { createProjectSchema } from '@/schemas/project'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Project } from '@prisma/client'
 import Link from 'next/link'
@@ -38,8 +38,8 @@ const ProjectForm = ({
 	const { setMessage } = useToast()
 	const { push } = useRouter()
 
-	const form = useForm<z.infer<typeof createProyectSchema>>({
-		resolver: zodResolver(createProyectSchema),
+	const form = useForm<z.infer<typeof createProjectSchema>>({
+		resolver: zodResolver(createProjectSchema),
 		defaultValues: {
 			name: project?.name || '',
 			description: project?.description || '',
@@ -63,7 +63,7 @@ const ProjectForm = ({
 		})
 	}
 
-	const onSubmit = async (values: z.infer<typeof createProyectSchema>) => {
+	const onSubmit = async (values: z.infer<typeof createProjectSchema>) => {
 		try {
 			await createOrUpdateProject(values, project?.id)
 			setMessage({

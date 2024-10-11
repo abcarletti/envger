@@ -4,26 +4,26 @@ import { createOrUpdateProject } from '@/app/services/server-actions'
 import { AutosizeTextarea } from '@/components/ui/autosize-textarea'
 import { Button } from '@/components/ui/button'
 import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from '@/components/ui/card'
 import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { PROJECTS_SELECTOR_KEY } from '@/lib/constants'
 import { showToast } from '@/lib/toast'
 import { getSlugByName } from '@/lib/utils'
 import { queryClient } from '@/providers/tanstack-query'
-import { createProyectSchema } from '@/schemas/project'
+import { createProjectSchema } from '@/schemas/project'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -37,8 +37,8 @@ export default function CreateDashboardPage() {
 		form.setValue('slug', getSlugByName(e.target.value))
 	}
 
-	const form = useForm<z.infer<typeof createProyectSchema>>({
-		resolver: zodResolver(createProyectSchema),
+	const form = useForm<z.infer<typeof createProjectSchema>>({
+		resolver: zodResolver(createProjectSchema),
 		defaultValues: {
 			name: '',
 			slug: '',
@@ -47,7 +47,7 @@ export default function CreateDashboardPage() {
 		},
 	})
 
-	const onSubmit = async (values: z.infer<typeof createProyectSchema>) => {
+	const onSubmit = async (values: z.infer<typeof createProjectSchema>) => {
 		try {
 			await createOrUpdateProject(values)
 			await queryClient.invalidateQueries({

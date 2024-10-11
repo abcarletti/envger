@@ -30,7 +30,7 @@ export function LoginForm() {
 					)}
 				>
 					<span className="text-primary text-3xl">{'<'}</span>
-					SecretNotes
+					Envger
 					<span className="text-primary"> {'/>'}</span>
 				</h1>
 			</div>
