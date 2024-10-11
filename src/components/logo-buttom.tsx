@@ -1,21 +1,20 @@
-import { cn } from '@/lib/utils'
 import { Home } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from './ui/button'
 
 const LogoButtom = () => {
 	return (
-		<div className="flex h-14 items-center border-b px-0 md:px-4 lg:h-[60px] lg:px-6">
-			<Button variant={'ghost'} className="p-2 hidden md:block" asChild>
+		<div className="flex h-14 items-center border-b px-0 lg:h-[60px] lg:px-6">
+			<Button
+				variant={'ghost'}
+				className="hidden md:flex items-center justify-center hover:background-none"
+				asChild
+			>
 				<Link
 					href="/dashboard"
-					className="flex items-center gap-2 font-semibold p-0 md:p-2"
+					className="flex items-center justify-centerfont-semibold p-0"
 				>
-					<h1
-						className={cn(
-							'px-0 md:px-2 text-secondary-foreground text-xl font-semibold',
-						)}
-					>
+					<h1 className="px-0 text-secondary-foreground text-xl font-semibold items-center justify-center">
 						<span className="text-primary text-2xl">{'<'}</span>
 						Envger
 						<span className="text-primary"> {'/>'}</span>
