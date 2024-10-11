@@ -1,5 +1,5 @@
 import prisma from '@/clients/prisma'
-import { Provider } from '@prisma/client'
+import { Provider, Role } from '@prisma/client'
 import * as bcrypt from 'bcryptjs'
 import NextAuth, { DefaultSession } from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
@@ -48,12 +48,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 				)
 
 				if (!isPasswordValid) {
-					throw new Error('Credenciales incorretas')
+					throw new Error('Credenciales incorrectas')
 				}
 
 				// return user object with the their profile data
 				return {
 					id: user.id,
+					role: user.role,
 					username: user.username,
 					name: user.completeName,
 					email: user.email,
@@ -84,6 +85,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 					if (!user) {
 						user = await prisma.user.create({
 							data: {
+								role: Role.USER,
 								provider: Provider.GITHUB,
 								username: <string>profile?.login,
 								completeName: <string>profile?.name,
@@ -97,17 +99,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 					token.username = profile?.login
 					token.name = profile?.name
 					token.email = profile?.email
+					token.role = user.role
 				} else {
 					token.id = user?.id
 					token.username = user?.username
 					token.name = user?.username
 					token.email = user?.email
+					token.role = user?.role
 				}
 			}
 			return token
 		},
 		session: async ({ session, token }) => {
 			session.user.id = <string>token.id
+			session.user.role = token.role === Role.ADMIN ? Role.ADMIN : Role.USER
 			session.user.name = token.name
 			session.user.email = token.email || ''
 			return session
@@ -127,6 +132,7 @@ declare module 'next-auth' {
 			 * with the new ones defined above. To keep the default session user properties,
 			 * you need to add them back into the newly declared interface.
 			 */
+			role: Role
 		} & DefaultSession['user']
 	}
 
@@ -136,5 +142,6 @@ declare module 'next-auth' {
 		name?: string | null
 		email?: string | null
 		image?: string | null
+		role?: Role
 	}
 }

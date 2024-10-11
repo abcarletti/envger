@@ -1,14 +1,14 @@
-name: secret-notes-environment
+name: envger-environment
 
 services:
   postgres:
-    container_name: secret-notes-database
+    container_name: envger-db
     image: postgres:16.3-alpine
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: secret-notes
+      POSTGRES_DB: envger
     volumes:
       - ./pg-data:/var/lib/postgresql/data
     ports:
-      - "5433:5432"
+      - "5432:5432"

@@ -2,12 +2,18 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum Role {
+  ADMIN
+  USER
+}
+
 enum Provider {
   GITHUB
   CREDENTIALS
 }
 
 enum Env {
+  NONE
   LOCAL
   DEV
   PRE
@@ -20,7 +26,8 @@ datasource db {
 }
 
 model User {
-  id           String    @id @default(uuid())
+  id           String    @id @default(uuid()) @db.Uuid
+  role         Role      @default(USER)
   provider     Provider  @default(CREDENTIALS)
   username     String?
   password     String?
@@ -37,17 +44,18 @@ model User {
 }
 
 model Project {
-  id          String   @id @default(uuid())
+  id          String        @id @default(uuid()) @db.Uuid
   name        String
   slug        String
   description String?
-  user        User     @relation(fields: [userId], references: [id])
-  userId      String   @map("user_id")
-  imageUrl    String?  @map("image_url")
-  favorite    Boolean  @default(false)
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-  Group       Group[]
+  user        User          @relation(fields: [userId], references: [id])
+  userId      String        @map("user_id") @db.Uuid
+  imageUrl    String?       @map("image_url")
+  favorite    Boolean       @default(false)
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  groups      Group[]
+  notes       ProjectNote[]
 
   @@unique([slug, userId], name: "slug_user_id")
   @@index([userId], name: "user_id")
@@ -57,9 +65,9 @@ model Project {
 }
 
 model Group {
-  id          String        @id @default(uuid())
+  id          String        @id @default(uuid()) @db.Uuid
   project     Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId   String        @map("project_id")
+  projectId   String        @map("project_id") @db.Uuid
   tag         String
   name        String
   description String?
@@ -76,12 +84,12 @@ model Group {
 }
 
 model Credentials {
-  id          String   @id @default(uuid())
+  id          String   @id @default(uuid()) @db.Uuid
   group       Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  groupId     String   @map("group_id")
+  groupId     String   @map("group_id") @db.Uuid
   username    String
   password    String
-  environment Env      @default(LOCAL)
+  environment Env      @default(NONE)
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
@@ -90,11 +98,11 @@ model Credentials {
 }
 
 model Url {
-  id          String   @id @default(uuid())
+  id          String   @id @default(uuid()) @db.Uuid
   group       Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  groupId     String   @map("group_id")
+  groupId     String   @map("group_id") @db.Uuid
   url         String
-  environment Env      @default(LOCAL)
+  environment Env      @default(NONE)
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
@@ -103,13 +111,26 @@ model Url {
 }
 
 model Note {
-  id        String   @id @default(uuid())
+  id        String   @id @default(uuid()) @db.Uuid
   group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  groupId   String   @unique @map("group_id")
+  groupId   String   @unique @map("group_id") @db.Uuid
   note      String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@index([groupId], name: "notes_group_id")
   @@map("notes")
+}
+
+model ProjectNote {
+  id        String   @id @default(uuid()) @db.Uuid
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String   @map("project_id") @db.Uuid
+  note      String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([projectId])
+  @@index([projectId], name: "notes_project_id")
+  @@map("project_notes")
 }

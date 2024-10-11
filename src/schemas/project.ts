@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const createProyectSchema = z.object({
+export const createProjectSchema = z.object({
 	name: z
 		.string({
 			message: 'El nombre del proyecto es obligatorio',

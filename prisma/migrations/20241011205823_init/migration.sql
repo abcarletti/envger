@@ -1,12 +1,16 @@
 -- CreateEnum
+CREATE TYPE "Role" AS ENUM ('ADMIN', 'USER');
+
+-- CreateEnum
 CREATE TYPE "Provider" AS ENUM ('GITHUB', 'CREDENTIALS');
 
 -- CreateEnum
-CREATE TYPE "Env" AS ENUM ('LOCAL', 'DEV', 'PRE', 'PRO');
+CREATE TYPE "Env" AS ENUM ('NONE', 'LOCAL', 'DEV', 'PRE', 'PRO');
 
 -- CreateTable
 CREATE TABLE "users" (
-    "id" TEXT NOT NULL,
+    "id" UUID NOT NULL,
+    "role" "Role" NOT NULL DEFAULT 'USER',
     "provider" "Provider" NOT NULL DEFAULT 'CREDENTIALS',
     "username" TEXT,
     "password" TEXT,
@@ -21,11 +25,11 @@ CREATE TABLE "users" (
 
 -- CreateTable
 CREATE TABLE "projects" (
-    "id" TEXT NOT NULL,
+    "id" UUID NOT NULL,
     "name" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
     "description" TEXT,
-    "user_id" TEXT NOT NULL,
+    "user_id" UUID NOT NULL,
     "image_url" TEXT,
     "favorite" BOOLEAN NOT NULL DEFAULT false,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -36,8 +40,8 @@ CREATE TABLE "projects" (
 
 -- CreateTable
 CREATE TABLE "groups" (
-    "id" TEXT NOT NULL,
-    "project_id" TEXT NOT NULL,
+    "id" UUID NOT NULL,
+    "project_id" UUID NOT NULL,
     "tag" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
@@ -49,11 +53,11 @@ CREATE TABLE "groups" (
 
 -- CreateTable
 CREATE TABLE "credentials" (
-    "id" TEXT NOT NULL,
-    "group_id" TEXT NOT NULL,
+    "id" UUID NOT NULL,
+    "group_id" UUID NOT NULL,
     "username" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "environment" "Env" NOT NULL DEFAULT 'LOCAL',
+    "environment" "Env" NOT NULL DEFAULT 'NONE',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -62,10 +66,10 @@ CREATE TABLE "credentials" (
 
 -- CreateTable
 CREATE TABLE "urls" (
-    "id" TEXT NOT NULL,
-    "group_id" TEXT NOT NULL,
+    "id" UUID NOT NULL,
+    "group_id" UUID NOT NULL,
     "url" TEXT NOT NULL,
-    "environment" "Env" NOT NULL DEFAULT 'LOCAL',
+    "environment" "Env" NOT NULL DEFAULT 'NONE',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -74,13 +78,24 @@ CREATE TABLE "urls" (
 
 -- CreateTable
 CREATE TABLE "notes" (
-    "id" TEXT NOT NULL,
-    "group_id" TEXT NOT NULL,
+    "id" UUID NOT NULL,
+    "group_id" UUID NOT NULL,
     "note" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "notes_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "project_notes" (
+    "id" UUID NOT NULL,
+    "project_id" UUID NOT NULL,
+    "note" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "project_notes_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -122,6 +137,12 @@ CREATE UNIQUE INDEX "notes_group_id_key" ON "notes"("group_id");
 -- CreateIndex
 CREATE INDEX "notes_group_id" ON "notes"("group_id");
 
+-- CreateIndex
+CREATE INDEX "notes_project_id" ON "project_notes"("project_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "project_notes_project_id_key" ON "project_notes"("project_id");
+
 -- AddForeignKey
 ALTER TABLE "projects" ADD CONSTRAINT "projects_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -136,3 +157,6 @@ ALTER TABLE "urls" ADD CONSTRAINT "urls_group_id_fkey" FOREIGN KEY ("group_id") 
 
 -- AddForeignKey
 ALTER TABLE "notes" ADD CONSTRAINT "notes_group_id_fkey" FOREIGN KEY ("group_id") REFERENCES "groups"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "project_notes" ADD CONSTRAINT "project_notes_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "projects"("id") ON DELETE CASCADE ON UPDATE CASCADE;

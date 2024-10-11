@@ -3,7 +3,7 @@
 import prisma from '@/clients/prisma'
 import { auth, signIn } from '@/lib/auth'
 import { createProjectGroupSchema } from '@/schemas/group'
-import { createProyectSchema } from '@/schemas/project'
+import { createProjectSchema } from '@/schemas/project'
 import { Group, Project } from '@prisma/client'
 import { z } from 'zod'
 
@@ -20,7 +20,7 @@ export async function handleGitHubSignIn() {
 }
 
 export const createOrUpdateProject = async (
-	data: z.infer<typeof createProyectSchema>,
+	data: z.infer<typeof createProjectSchema>,
 	projectId?: string,
 ) => {
 	const session = await auth()
