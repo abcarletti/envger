@@ -12,7 +12,7 @@ const LogoButtom = () => {
 			>
 				<Link
 					href="/dashboard"
-					className="flex items-center justify-centerfont-semibold p-0"
+					className="flex items-center justify-center font-semibold p-0"
 				>
 					<h1 className="px-0 text-secondary-foreground text-xl font-semibold items-center justify-center">
 						<span className="text-primary text-2xl">{'<'}</span>
