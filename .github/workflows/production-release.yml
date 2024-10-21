@@ -20,24 +20,16 @@ permissions:
 
 jobs:
 
-  checkout-code:
+  # Job para verificar la construcción de la imagen en Pull Requests
+  check-build-image:
+    # Se ejecuta cuando el evento es 'pull_request' (creación o actualización de un PR)
+    if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4.2.1
-
-      - name: List files in root
-        run: ls -la
-
-  # Job para verificar la construcción de la imagen en Pull Requests
-  check-build-image:
-    # Se ejecuta cuando el evento es 'pull_request' (creación o actualización de un PR)
-    if: ${{ github.event_name == 'pull_request' }}
-    needs: checkout-code
-    runs-on: ubuntu-latest
-
-    steps:
+        
       - name: Setup Node.js
         uses: actions/setup-node@v4.0.4
         with:
@@ -59,10 +51,12 @@ jobs:
   semantic-release:
     # Se ejecuta cuando el evento es 'pull_request_target' y el PR fue mergeado
     if: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.merged == true }}
-    needs: checkout-code
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.2.1
+        
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v4.1.1
         env:
