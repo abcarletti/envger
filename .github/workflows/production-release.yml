@@ -1,20 +1,42 @@
 name: Envger CI
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
+      - develop
+    types:
+      - closed
 
 permissions:
   contents: write
 
 jobs:
-  build:
+  build-and-release:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
+    
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 'lts/*'
+        cache: 'pnpm'
+
+    - name: Install pnpm
+      run: |
+        npm install -g pnpm
+
+    - name: Install dependencies
+      run: |
+        pnpm install
+
+    - name: Build the project
+      run: |
+        pnpm run build
       
     - name: Semantic Release
       uses: cycjimmy/semantic-release-action@v4
