@@ -25,7 +25,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4.0.4
+        uses: actions/checkout@v4.2.1
 
   # Job para verificar la construcción de la imagen en Pull Requests
   check-build-image:
@@ -36,7 +36,7 @@ jobs:
 
     steps:
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4.0.4
         with:
           node-version: 'lts/*'
           cache: 'pnpm'
