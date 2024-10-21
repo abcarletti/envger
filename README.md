@@ -1,3 +1,5 @@
+[![semantic-release: angular](https://img.shields.io/badge/semantic--release-Next.js-58c4dc?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
