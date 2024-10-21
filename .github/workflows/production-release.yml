@@ -19,61 +19,49 @@ permissions:
   contents: write
 
 jobs:
-  # Job para verificar la construcción de la imagen en Pull Requests
-  build-image:
-    # Se ejecuta cuando el evento es 'pull_request' (creación o actualización de un PR)
-    if: ${{ github.event_name == 'pull_request' }}
+
+  checkout-code:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.1
 
+  # Job para verificar la construcción de la imagen en Pull Requests
+  check-build-image:
+    # Se ejecuta cuando el evento es 'pull_request' (creación o actualización de un PR)
+    if: ${{ github.event_name == 'pull_request' }}
+    needs: checkout-code
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4.0.4
         with:
           node-version: 'lts/*'
-          cache: 'pnpm'
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4.0.0
         with:
           version: 'latest'
+          cache: true  # Habilita la caché de pnpm
 
       - name: Install dependencies
         run: pnpm install
 
       - name: Build the project
         run: pnpm run build
+        
   # Job para ejecutar semantic-release cuando el PR es mergeado
   semantic-release:
     # Se ejecuta cuando el evento es 'pull_request_target' y el PR fue mergeado
     if: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.merged == true }}
+    needs: checkout-code
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 'lts/*'
-          cache: 'pnpm'
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 'latest'
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Build the project
-        run: pnpm run build
-
       - name: Semantic Release
-        uses: cycjimmy/semantic-release-action@v4
+        uses: cycjimmy/semantic-release-action@v4.1.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
