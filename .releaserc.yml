@@ -15,7 +15,7 @@ gitlabUrl: 'https://gitlab.uxsmobile.com/' # your gitlab url
 verifyConditions:
   - '@semantic-release/changelog'
   - '@semantic-release/git'
-  - '@semantic-release/gitlab'
+  - '@semantic-release/github'
 
 # Responsible for determining the type of the next release (major, minor or patch).
 # If multiple plugins with a analyzeCommits step are defined, the release type will be
