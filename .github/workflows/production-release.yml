@@ -27,6 +27,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4.2.1
 
+      - name: List files in root
+        run: ls -la
+
   # Job para verificar la construcción de la imagen en Pull Requests
   check-build-image:
     # Se ejecuta cuando el evento es 'pull_request' (creación o actualización de un PR)
