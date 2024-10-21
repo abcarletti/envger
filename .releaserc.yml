@@ -49,7 +49,7 @@ prepare:
 
 # Responsible for publishing the release.
 publish:
-  - path: '@semantic-release/gitlab'
+  - path: '@semantic-release/github'
 
 success:
   false
