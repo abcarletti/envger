@@ -1,9 +1,15 @@
-[![semantic-release: angular](https://img.shields.io/badge/semantic--release-Next.js-58c4dc?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
-
-<a href="https://github.com/abcarletti/envger/actions/workflows/production-release.yml">
+<h1 align="center" style="border-bottom: none;">🔐 Envger</h1>
+<!-- <h3 align="center">Fully automated version management and package publishing</h3> -->
+<p align="center">
+  <a href="https://github.com/abcarletti/envger/actions/workflows/production-release.yml">
     <img alt="Build states" src="https://github.com/abcarletti/envger/actions/workflows/production-release.yml/badge.svg">
   </a>
-
+</p>
+<p align="center">
+  <a href="[https://www.npmjs.com/package/semantic-release](https://github.com/semantic-release/semantic-release)">
+    <img alt="semantic-release: Next.js" src="https://img.shields.io/badge/semantic--release-Next.js-58c4dc?logo=semantic-release">
+  </a>
+</p>
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
