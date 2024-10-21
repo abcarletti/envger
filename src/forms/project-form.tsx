@@ -5,12 +5,12 @@ import { createOrUpdateProject } from '@/app/services/server-actions'
 import { AutosizeTextarea } from '@/components/ui/autosize-textarea'
 import { Button } from '@/components/ui/button'
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { PROJECT_KEY, PROJECTS_SELECTOR_KEY } from '@/lib/constants'
