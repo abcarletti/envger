@@ -1,5 +1,10 @@
 [![semantic-release: angular](https://img.shields.io/badge/semantic--release-Next.js-58c4dc?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
+<a href="https://github.com/abcarletti/envger/actions/workflows/production-release.yml">
+    <img alt="Build states" src="https://github.com/abcarletti/envger/actions/workflows/production-release.yml/badge.svg">
+  </a>
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
