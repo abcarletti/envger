@@ -4,8 +4,6 @@
   <a href="https://github.com/abcarletti/envger/actions/workflows/production-release.yml">
     <img alt="Build states" src="https://github.com/abcarletti/envger/actions/workflows/production-release.yml/badge.svg">
   </a>
-</p>
-<p align="center">
   <a href="[https://www.npmjs.com/package/semantic-release](https://github.com/semantic-release/semantic-release)">
     <img alt="semantic-release: Next.js" src="https://img.shields.io/badge/semantic--release-Next.js-58c4dc?logo=semantic-release">
   </a>
