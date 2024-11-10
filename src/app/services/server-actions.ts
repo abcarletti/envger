@@ -125,33 +125,38 @@ export const createOrUpdateGroup = async (
 ) => {
 	const session = await auth()
 
-	return await prisma.group.upsert({
-		update: {
-			name: data.name,
-			description: data.description,
-			tag: data.tag,
-		},
-		where: {
-			id: groupId,
-			project: {
-				userId: <string>session?.user.id,
-				slug: project.slug,
+	if (groupId) {
+		return await prisma.group.update({
+			where: {
+				id: groupId,
+				project: {
+					userId: <string>session?.user.id,
+					slug: project.slug,
+				},
 			},
-		},
-		create: {
-			name: data.name,
-			description: data.description,
-			tag: data.tag,
-			project: {
-				connect: {
-					slug_user_id: {
-						userId: <string>session?.user.id,
-						slug: project.slug,
+			data: {
+				name: data.name,
+				description: data.description,
+				tag: data.tag,
+			},
+		})
+	} else {
+		return await prisma.group.create({
+			data: {
+				name: data.name,
+				description: data.description,
+				tag: data.tag,
+				project: {
+					connect: {
+						slug_user_id: {
+							userId: <string>session?.user.id,
+							slug: project.slug,
+						},
 					},
 				},
 			},
-		},
-	})
+		})
+	}
 }
 
 export const deleteGroup = async (groupId: string, projectId: string) => {

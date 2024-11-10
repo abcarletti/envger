@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 export default function queryGetData<T>(
 	queryKey: any[],
 	queryFn: () => Promise<T>,
-	enabled: boolean,
+	enabled: boolean = true,
 ) {
 	if (!queryKey) {
 		return {

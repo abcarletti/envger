@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { PROJECT_KEY, PROJECTS_SELECTOR_KEY } from '@/lib/constants'
-import { getTagByName } from '@/lib/utils'
+import { getSlugByName } from '@/lib/utils'
 import { queryClient } from '@/providers/tanstack-query'
 import { createProjectSchema } from '@/schemas/project'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -43,7 +43,7 @@ const ProjectForm = ({
 		defaultValues: {
 			name: project?.name || '',
 			description: project?.description || '',
-			slug: project?.slug || '',
+			slug: project?.name ? getSlugByName(project?.name) : '',
 		},
 	})
 
@@ -51,7 +51,7 @@ const ProjectForm = ({
 
 	function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
 		form.setValue('name', e.target.value)
-		form.setValue('slug', getTagByName(e.target.value))
+		form.setValue('slug', getSlugByName(e.target.value))
 	}
 
 	const invalidateProjectsQuery = () => {

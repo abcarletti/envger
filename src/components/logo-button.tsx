@@ -2,7 +2,7 @@ import { Home } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from './ui/button'
 
-const LogoButtom = () => {
+const LogoButton = () => {
 	return (
 		<div className="flex h-14 items-center border-b px-0 lg:h-[60px] lg:px-6">
 			<Button
@@ -33,4 +33,4 @@ const LogoButtom = () => {
 	)
 }
 
-export default LogoButtom
+export default LogoButton
