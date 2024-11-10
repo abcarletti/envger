@@ -7,7 +7,7 @@ import {
 	getProjectBySlug,
 	setFavoriteProject,
 } from '@/app/services/server-actions'
-import AddGroupButtom from '@/components/add-group-buttom'
+import AddGroupButton from '@/components/add-group-button'
 import ConfirmDialog from '@/components/confirm-dialog'
 import ProjectGroups from '@/components/project-groups'
 import { Button, buttonVariants } from '@/components/ui/button'
@@ -111,7 +111,7 @@ export default function ProjectPage({
 		<>
 			{isLoadingProjects && <Skeleton className="bg-primary/80 min-w-56 h-9" />}
 			{!isLoadingProjects && project && (
-				<section className="flex flex-col flex-1 overflow-hidden h-full">
+				<section className="flex flex-col flex-1 overflow-hidden h-full bg-background">
 					<div className="flex justify-between">
 						<div className="grid grid-cols-2 md:flex gap-3 flex-col md:flex-row md:items-center">
 							<div className="flex gap-3 items-center">
@@ -131,7 +131,7 @@ export default function ProjectPage({
 							</div>
 						</div>
 						<div className="flex md:pl-8 items-center gap-3">
-							<AddGroupButtom />
+							<AddGroupButton />
 							<Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
 								<DropdownMenu>
 									<DropdownMenuTrigger className="flex items-center focus:outline-none h-7">

@@ -1,5 +1,3 @@
-import Link from 'next/link'
-
 import {
 	handleCredentialSignIn,
 	handleGitHubSignIn,
@@ -10,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { GitHubLogoIcon } from '@radix-ui/react-icons'
 
-export default function LoginCard({
+export default function RegisterCard({
 	loginError,
 }: {
 	loginError: (msg: string) => void
@@ -20,7 +18,7 @@ export default function LoginCard({
 	}
 
 	return (
-		<Card className="mx-auto max-w-sm h-fit">
+		<Card className="mx-auto min-w-96 h-fit">
 			<CardContent className="pt-6">
 				<div className="grid gap-4">
 					<form
@@ -34,11 +32,15 @@ export default function LoginCard({
 						}}
 					>
 						<div className="grid gap-2">
-							<Label htmlFor="username">Usuario</Label>
+							<Label htmlFor="name">Nombre completo</Label>
+							<Input id="name" name="name" type="text" required />
+						</div>
+						<div className="grid gap-2">
+							<Label htmlFor="email">Email</Label>
 							<Input
-								id="username"
-								name="username"
-								type="text"
+								id="email"
+								name="email"
+								type="email"
 								placeholder="m@example.com"
 								required
 							/>
@@ -46,17 +48,17 @@ export default function LoginCard({
 						<div className="grid gap-2">
 							<div className="flex items-center">
 								<Label htmlFor="password">Contraseña</Label>
-								<Link
-									href="#"
-									className="ml-auto inline-block text-xs underline"
-								>
-									¿Has olvidado tu contraseña?
-								</Link>
+							</div>
+							<Input id="password" type="password" name="password" required />
+						</div>
+						<div className="grid gap-2">
+							<div className="flex items-center">
+								<Label htmlFor="password">Repetir contraseña</Label>
 							</div>
 							<Input id="password" type="password" name="password" required />
 						</div>
 						<Button type="submit" className="w-full">
-							Iniciar sesión
+							Registrarme
 						</Button>
 					</form>
 					<form
@@ -68,12 +70,6 @@ export default function LoginCard({
 							<GitHubLogoIcon /> Acceder con GitHub
 						</Button>
 					</form>
-				</div>
-				<div className="mt-4 text-center text-sm">
-					¿Todavía no tienes una cuenta?{' '}
-					<Link href={'/register'} className="underline text-primary">
-						Registrarme
-					</Link>
 				</div>
 			</CardContent>
 		</Card>

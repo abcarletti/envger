@@ -14,7 +14,7 @@ import {
 	DialogTrigger,
 } from './ui/dialog'
 
-const AddGroupButtom = () => {
+const AddGroupButton = () => {
 	const [dialogOpen, setDialogOpen] = useState(false)
 	const [showButton, setShowButton] = useState(false)
 	const { project } = useProjectStore((store) => store)
@@ -53,4 +53,4 @@ const AddGroupButtom = () => {
 	)
 }
 
-export default AddGroupButtom
+export default AddGroupButton

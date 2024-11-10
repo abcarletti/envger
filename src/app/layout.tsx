@@ -13,7 +13,7 @@ const ibm = IBM_Plex_Mono({
 })
 
 export const metadata: Metadata = {
-	title: 'Secret notes 🔐',
+	title: 'Envger 🔐',
 	description:
 		'Aplicación para manejar los accesos a recursos para desarrolladores',
 }

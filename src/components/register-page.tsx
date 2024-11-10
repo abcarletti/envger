@@ -1,13 +1,13 @@
 'use client'
 
 import { toast } from 'sonner'
-import LoginCard from './login-card'
 
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
+import RegisterCard from './register-card'
 import Logo from '/public/logo.png'
 
-export function LoginForm() {
+export function RegisterForm() {
 	const handleLoginError = (msg: string) => {
 		toast.error(msg)
 	}
@@ -34,7 +34,7 @@ export function LoginForm() {
 					<span className="text-primary"> {'/>'}</span>
 				</h1>
 			</div>
-			<LoginCard loginError={handleLoginError} />
+			<RegisterCard loginError={handleLoginError} />
 		</div>
 	)
 }

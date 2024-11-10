@@ -13,7 +13,7 @@ import { Group } from '@prisma/client'
 import { Boxes } from 'lucide-react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import AddGroupButtom from './add-group-buttom'
+import AddGroupButton from './add-group-button'
 import GroupArticle from './compose-group-article'
 import { Label } from './ui/label'
 
@@ -128,7 +128,7 @@ export default function ProjectGroups() {
 				<section className="flex flex-1 flex-col gap-8 items-center justify-center">
 					<Boxes className="size-20 text-primary" />
 					<Label className="text-2xl uppercase">No hay grupos</Label>
-					<AddGroupButtom />
+					<AddGroupButton />
 				</section>
 			)}
 		</>
