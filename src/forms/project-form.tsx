@@ -1,8 +1,6 @@
 'use client'
 
-import { useToast } from '@/app/hooks/use-toast'
-import { createOrUpdateProject } from '@/app/services/server-actions'
-import { AutosizeTextarea } from '@/components/ui/autosize-textarea'
+import { AutoSizeTextarea } from '@/components/ui/auto-size-textarea'
 import { Button } from '@/components/ui/button'
 import {
 	Form,
@@ -13,10 +11,12 @@ import {
 	FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { useToast } from '@/hooks/use-toast'
 import { PROJECT_KEY, PROJECTS_SELECTOR_KEY } from '@/lib/constants'
 import { getSlugByName } from '@/lib/utils'
 import { queryClient } from '@/providers/tanstack-query'
 import { createProjectSchema } from '@/schemas/project'
+import { createOrUpdateProject } from '@/services/server-actions'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Project } from '@prisma/client'
 import Link from 'next/link'
@@ -134,7 +134,7 @@ const ProjectForm = ({
 						<FormItem className="w-full">
 							<FormLabel>Description</FormLabel>
 							<FormControl>
-								<AutosizeTextarea {...field} className="bg-transparent" />
+								<AutoSizeTextarea {...field} className="bg-transparent" />
 							</FormControl>
 							<FormMessage />
 						</FormItem>

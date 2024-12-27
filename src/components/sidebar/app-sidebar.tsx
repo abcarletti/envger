@@ -1,5 +1,3 @@
-'use client'
-
 import { NavUser } from '@/components/sidebar/nav-user'
 import {
 	Sidebar,
@@ -10,6 +8,7 @@ import {
 } from '@/components/ui/sidebar'
 import * as React from 'react'
 import { ProjectSwitcher } from './project-switcher'
+import { SidebarGroups } from './sidebar-groups'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 	return (
@@ -17,7 +16,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 			<SidebarHeader>
 				<ProjectSwitcher />
 			</SidebarHeader>
-			<SidebarContent>
+			<SidebarContent className="my-6">
+				<SidebarGroups />
 				{/* <NavMain items={data.navMain} />
 				<NavProjects projects={data.projects} /> */}
 			</SidebarContent>

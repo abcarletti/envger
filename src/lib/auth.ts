@@ -56,7 +56,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 					id: user.id,
 					role: user.role,
 					username: user.username,
-					name: user.completeName,
+					completeName: <string>user.completeName,
 					email: user.email,
 					image: user.avatar,
 				}
@@ -78,32 +78,37 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 				if (account?.provider === 'github') {
 					let user = await prisma.user.findFirst({
 						where: {
-							provider: Provider.GITHUB,
 							username: <string>profile?.login,
 						},
 					})
+					if (user && user.provider !== Provider.GITHUB) {
+						// Si ya existe el usuario y no se creó con GitHub, lanza un error
+						throw new Error(
+							'Ya existe un usuario con este correo registrado con otro proveedor.',
+						)
+					}
 					if (!user) {
 						user = await prisma.user.create({
 							data: {
 								role: Role.USER,
 								provider: Provider.GITHUB,
-								username: <string>profile?.login,
+								username: <string>profile?.email,
 								completeName: <string>profile?.name,
 								email: <string>profile?.email,
-								avatar: <string>profile?.avatar_url,
+								avatar: <string>profile?.image,
 							},
 						})
 					}
 					token.id = user.id
 					token.avatar = profile?.avatar_url
 					token.username = profile?.login
-					token.name = profile?.name
+					token.completeName = user?.completeName
 					token.email = profile?.email
 					token.role = user.role
 				} else {
 					token.id = user?.id
 					token.username = user?.username
-					token.name = user?.username
+					token.completeName = user?.completeName
 					token.email = user?.email
 					token.role = user?.role
 				}
@@ -111,11 +116,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 			return token
 		},
 		session: async ({ session, token }) => {
-			session.user.id = <string>token.id
-			session.user.role = token.role === Role.ADMIN ? Role.ADMIN : Role.USER
-			session.user.name = token.name
-			session.user.email = token.email || ''
-			return session
+			const auxSession = {
+				...session,
+				user: {
+					...session.user,
+					id: <string>token.id,
+					role: token.role === Role.ADMIN ? Role.ADMIN : Role.USER,
+					completeName: <string>token.completeName || '',
+					email: token.email || '',
+				},
+			}
+			return auxSession
 		},
 	},
 })
@@ -133,13 +144,14 @@ declare module 'next-auth' {
 			 * you need to add them back into the newly declared interface.
 			 */
 			role: Role
+			completeName: string
 		} & DefaultSession['user']
 	}
 
 	interface User {
 		id?: string
 		username?: string | null
-		name?: string | null
+		completeName?: string
 		email?: string | null
 		image?: string | null
 		role?: Role

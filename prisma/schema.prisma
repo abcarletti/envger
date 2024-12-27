@@ -38,6 +38,7 @@ model User {
   updatedAt    DateTime  @updatedAt @map("updated_at")
   Project      Project[]
 
+  @@unique([username])
   @@index([provider, username], name: "provider_username")
   @@index([provider, email], name: "provider_email")
   @@map("users")

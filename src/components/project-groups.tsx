@@ -1,14 +1,11 @@
 'use client'
 
-import { useToast } from '@/app/hooks/use-toast'
-import queryGetData from '@/app/services/query-request'
-import {
-	deleteGroup,
-	getProjectGroupsBySlug,
-} from '@/app/services/server-actions'
+import { useToast } from '@/hooks/use-toast'
 import { GROUPS_KEY, GROUPS_NAV_KEY } from '@/lib/constants'
 import { useProjectStore } from '@/providers/project-store-provider'
 import { queryClient } from '@/providers/tanstack-query'
+import queryGetData from '@/services/query-request'
+import { deleteGroup, getProjectGroupsBySlug } from '@/services/server-actions'
 import { Group } from '@prisma/client'
 import { Boxes } from 'lucide-react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'

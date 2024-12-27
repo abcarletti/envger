@@ -1,13 +1,14 @@
 'use client'
 
-import { useToast } from '@/app/hooks/use-toast'
-import { getUrlsGroup } from '@/app/services/group-service'
-import queryGetData from '@/app/services/query-request'
-import { deleteUrl } from '@/app/services/url-service'
 import UrlForm from '@/forms/url-form'
+import { useToast } from '@/hooks/use-toast'
 import { URLS_KEY } from '@/lib/constants'
 import { cn } from '@/lib/utils'
+import { environments } from '@/models/environment'
 import { queryClient } from '@/providers/tanstack-query'
+import { getUrlsGroup } from '@/services/group-service'
+import queryGetData from '@/services/query-request'
+import { deleteUrl } from '@/services/url-service'
 import { Url } from '@prisma/client'
 import { ExternalLink, Pencil, Trash } from 'lucide-react'
 import Link from 'next/link'
@@ -86,10 +87,11 @@ const UrlsGroup = ({ groupId }: { groupId: string }) => {
 									<SelectValue placeholder="Selecciona un entorno" />
 								</SelectTrigger>
 								<SelectContent>
-									<SelectItem value="LOCAL">Local</SelectItem>
-									<SelectItem value="DEV">Desarrollo</SelectItem>
-									<SelectItem value="PRE">Pre-producción</SelectItem>
-									<SelectItem value="PRO">Producción</SelectItem>
+									{environments.map(({ value, label }) => (
+										<SelectItem key={value} value={value}>
+											{label}
+										</SelectItem>
+									))}
 								</SelectContent>
 							</Select>
 							<div className="flex w-full gap-2">

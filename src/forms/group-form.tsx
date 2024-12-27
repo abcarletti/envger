@@ -1,6 +1,4 @@
-import { useToast } from '@/app/hooks/use-toast'
-import { createOrUpdateGroup } from '@/app/services/server-actions'
-import { AutosizeTextarea } from '@/components/ui/autosize-textarea'
+import { AutoSizeTextarea } from '@/components/ui/auto-size-textarea'
 import { Button } from '@/components/ui/button'
 import { DialogClose } from '@/components/ui/dialog'
 import {
@@ -12,11 +10,13 @@ import {
 	FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { useToast } from '@/hooks/use-toast'
 import { GROUPS_KEY, GROUPS_NAV_KEY } from '@/lib/constants'
 import { getTagByName } from '@/lib/utils'
 import { useProjectStore } from '@/providers/project-store-provider'
 import { queryClient } from '@/providers/tanstack-query'
 import { createProjectGroupSchema } from '@/schemas/group'
+import { createOrUpdateGroup } from '@/services/server-actions'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Group } from '@prisma/client'
 import { useForm } from 'react-hook-form'
@@ -116,7 +116,7 @@ export const GroupForm = ({
 							<FormItem className="w-full">
 								<FormLabel>Description</FormLabel>
 								<FormControl>
-									<AutosizeTextarea {...field} />
+									<AutoSizeTextarea {...field} />
 								</FormControl>
 								<FormMessage />
 							</FormItem>

@@ -39,6 +39,8 @@ const accents = [
 
 export const getEnvType = (env: string): Env => {
 	switch (env) {
+		case 'NONE':
+			return Env.NONE
 		case 'LOCAL':
 			return Env.LOCAL
 		case 'DEV':

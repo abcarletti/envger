@@ -1,9 +1,9 @@
-import useDebounce from '@/app/hooks/use-debounce'
-import { getNoteGroup, updateNoteGroup } from '@/app/services/note-service'
-import queryGetData from '@/app/services/query-request'
+import useDebounce from '@/hooks/use-debounce'
 import { NOTE_KEY } from '@/lib/constants'
+import { getNoteGroup, updateNoteGroup } from '@/services/note-service'
+import queryGetData from '@/services/query-request'
 import { ChangeEvent, useEffect, useState } from 'react'
-import { AutosizeTextarea } from './ui/autosize-textarea'
+import { AutoSizeTextarea } from './ui/auto-size-textarea'
 import { Label } from './ui/label'
 
 interface Props {
@@ -36,7 +36,7 @@ const NotesGroup = ({ groupId }: Props) => {
 		try {
 			await updateNoteGroup(groupId, newNote)
 		} catch (error) {
-			console.log(error)
+			console.error(error)
 		}
 	}
 
@@ -48,7 +48,7 @@ const NotesGroup = ({ groupId }: Props) => {
 				<Label className="text-md text-gray-400">Notas</Label>
 			</div>
 			<div>
-				<AutosizeTextarea
+				<AutoSizeTextarea
 					className="w-full"
 					value={text}
 					onChange={handleChange}
