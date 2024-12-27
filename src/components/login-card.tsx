@@ -1,13 +1,13 @@
 import Link from 'next/link'
 
-import {
-	handleCredentialSignIn,
-	handleGitHubSignIn,
-} from '@/app/services/server-actions'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import {
+	handleCredentialSignIn,
+	handleGitHubSignIn,
+} from '@/services/server-actions'
 import { GitHubLogoIcon } from '@radix-ui/react-icons'
 
 export default function LoginCard({
@@ -61,7 +61,13 @@ export default function LoginCard({
 					</form>
 					<form
 						action={async () => {
-							await handleGitHubSignIn()
+							try {
+								await handleGitHubSignIn()
+							} catch (error) {
+								loginError(
+									'Se ha producido un error al iniciar sesión. Pruebe con otra cuenta',
+								)
+							}
 						}}
 					>
 						<Button type="submit" variant="outline" className="w-full gap-2">

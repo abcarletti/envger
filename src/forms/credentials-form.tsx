@@ -1,7 +1,6 @@
 'use client'
 
-import { useToast } from '@/app/hooks/use-toast'
-import { createOrUpdateCredentials } from '@/app/services/credentials-service'
+import { GeneratePassword } from '@/components/generate-password'
 import { Button } from '@/components/ui/button'
 import {
 	Form,
@@ -20,11 +19,15 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select'
+import { useToast } from '@/hooks/use-toast'
 import { CREDENTIALS_KEY } from '@/lib/constants'
+import { environments } from '@/models/environment'
 import { queryClient } from '@/providers/tanstack-query'
 import { createCredentialsSchema } from '@/schemas/credentials'
+import { createOrUpdateCredentials } from '@/services/credentials-service'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Credentials } from '@prisma/client'
+import { Separator } from '@radix-ui/react-separator'
 import { Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -55,7 +58,7 @@ const CredentialsForm = ({
 	const onSubmit = async (values: z.infer<typeof createCredentialsSchema>) => {
 		try {
 			await createOrUpdateCredentials(credentialsDetail?.id, groupId, values)
-			await queryClient.invalidateQueries({
+			await queryClient.removeQueries({
 				queryKey: [
 					CREDENTIALS_KEY,
 					{
@@ -70,7 +73,7 @@ const CredentialsForm = ({
 					: 'Credenciales creadas',
 				type: 'success',
 			})
-			closeDialog()
+			await closeDialog()
 		} catch (error) {
 			setMessage({
 				message: 'Se ha producido un error guardando las credenciales',
@@ -103,10 +106,11 @@ const CredentialsForm = ({
 										</SelectTrigger>
 									</FormControl>
 									<SelectContent>
-										<SelectItem value="LOCAL">Local</SelectItem>
-										<SelectItem value="DEV">Desarrollo</SelectItem>
-										<SelectItem value="PRE">Pre-producción</SelectItem>
-										<SelectItem value="PRO">Producción</SelectItem>
+										{environments.map(({ value, label }) => (
+											<SelectItem key={value} value={value}>
+												{label}
+											</SelectItem>
+										))}
 									</SelectContent>
 								</Select>
 								<FormMessage />
@@ -161,6 +165,12 @@ const CredentialsForm = ({
 							)}
 						/>
 					</div>
+					<Separator />
+					<GeneratePassword
+						onUsePassword={(passwordGenerated) => {
+							form.setValue('password', passwordGenerated)
+						}}
+					/>
 				</div>
 				<footer className="flex flex-row-reverse mt-4 gap-2">
 					<Button type="submit" size={'lg'} className="w-full">

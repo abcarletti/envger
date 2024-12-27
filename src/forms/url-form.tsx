@@ -1,7 +1,5 @@
 'use client'
 
-import { useToast } from '@/app/hooks/use-toast'
-import { createOrUpdateUrl } from '@/app/services/url-service'
 import { Button } from '@/components/ui/button'
 import {
 	Form,
@@ -20,9 +18,12 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select'
+import { useToast } from '@/hooks/use-toast'
 import { URLS_KEY } from '@/lib/constants'
+import { environments } from '@/models/environment'
 import { queryClient } from '@/providers/tanstack-query'
 import { createUrlSchema } from '@/schemas/url'
+import { createOrUpdateUrl } from '@/services/url-service'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Url } from '@prisma/client'
 import { useForm } from 'react-hook-form'
@@ -97,10 +98,11 @@ const UrlForm = ({
 										</SelectTrigger>
 									</FormControl>
 									<SelectContent>
-										<SelectItem value="LOCAL">Local</SelectItem>
-										<SelectItem value="DEV">Desarrollo</SelectItem>
-										<SelectItem value="PRE">Pre-producción</SelectItem>
-										<SelectItem value="PRO">Producción</SelectItem>
+										{environments.map(({ value, label }) => (
+											<SelectItem key={value} value={value}>
+												{label}
+											</SelectItem>
+										))}
 									</SelectContent>
 								</Select>
 								<FormMessage />

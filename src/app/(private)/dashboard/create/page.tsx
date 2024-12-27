@@ -1,7 +1,6 @@
 'use client'
 
-import { createOrUpdateProject } from '@/app/services/server-actions'
-import { AutosizeTextarea } from '@/components/ui/autosize-textarea'
+import { AutoSizeTextarea } from '@/components/ui/auto-size-textarea'
 import { Button } from '@/components/ui/button'
 import {
 	Card,
@@ -24,6 +23,7 @@ import { showToast } from '@/lib/toast'
 import { getSlugByName } from '@/lib/utils'
 import { queryClient } from '@/providers/tanstack-query'
 import { createProjectSchema } from '@/schemas/project'
+import { createOrUpdateProject } from '@/services/server-actions'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -122,7 +122,7 @@ export default function CreateDashboardPage() {
 									<FormItem className="w-full">
 										<FormLabel>Description</FormLabel>
 										<FormControl>
-											<AutosizeTextarea {...field} className="bg-transparent" />
+											<AutoSizeTextarea {...field} className="bg-transparent" />
 										</FormControl>
 										<FormMessage />
 									</FormItem>

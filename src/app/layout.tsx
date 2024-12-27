@@ -32,9 +32,9 @@ export default function RootLayout({
 					enableSystem
 					disableTransitionOnChange
 				>
-					<ProjectStoreProvider>
-						<QueryProvider>{children}</QueryProvider>
-					</ProjectStoreProvider>
+					<QueryProvider>
+						<ProjectStoreProvider>{children}</ProjectStoreProvider>
+					</QueryProvider>
 					<Toaster />
 				</ThemeProvider>
 			</body>

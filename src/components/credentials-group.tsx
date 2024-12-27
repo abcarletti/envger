@@ -1,23 +1,26 @@
 'use client'
 
-import { useToast } from '@/app/hooks/use-toast'
-import { deleteCredentials } from '@/app/services/credentials-service'
-import { getCredentialsGroup } from '@/app/services/group-service'
-import queryGetData from '@/app/services/query-request'
 import CredentialsForm from '@/forms/credentials-form'
+import { useToast } from '@/hooks/use-toast'
 import { CREDENTIALS_KEY } from '@/lib/constants'
 import { cn } from '@/lib/utils'
+import { environments } from '@/models/environment'
 import { queryClient } from '@/providers/tanstack-query'
+import { deleteCredentials } from '@/services/credentials-service'
+import { getCredentialsGroup } from '@/services/group-service'
+import queryGetData from '@/services/query-request'
 import { decrypt } from '@/utils/encryption'
 import { Credentials } from '@prisma/client'
 import { Eye, EyeOff, Pencil, Trash } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
+import zxcvbn from 'zxcvbn'
 import ConfirmDialog from './confirm-dialog'
 import DialogForm from './form-dialog'
 import { Button, buttonVariants } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
+import { Progress } from './ui/progress'
 import {
 	Select,
 	SelectContent,
@@ -26,12 +29,16 @@ import {
 	SelectValue,
 } from './ui/select'
 
+interface CredentialResult extends Credentials {
+	passwordStrength: number
+}
+
 const CredentialsGroup = ({ groupId }: { groupId: string }) => {
 	const { setMessage } = useToast()
 	const [showPassword, setShowPassword] = useState(false)
-	const [credentialsList, setCredentialsList] = useState<Credentials[] | null>(
-		null,
-	)
+	const [credentialsList, setCredentialsList] = useState<
+		CredentialResult[] | null
+	>(null)
 	const [openEditDialog, setOpenEditDialog] = useState(false)
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
 
@@ -50,12 +57,15 @@ const CredentialsGroup = ({ groupId }: { groupId: string }) => {
 		const decryptData = async () => {
 			if (data) {
 				const decryptedData = await Promise.all(
-					data?.map(async (credentials) => ({
-						...credentials,
-						password: await decrypt(credentials.password),
-					})),
+					data?.map(async (credentials) => {
+						const password = await decrypt(credentials.password)
+						return {
+							...credentials,
+							password,
+							passwordStrength: password ? zxcvbn(password).score : 0,
+						}
+					}),
 				)
-				console.log(decryptedData)
 				setCredentialsList(decryptedData)
 			}
 		}
@@ -67,12 +77,7 @@ const CredentialsGroup = ({ groupId }: { groupId: string }) => {
 		try {
 			await deleteCredentials(credentialsId)
 			await queryClient.invalidateQueries({
-				queryKey: [
-					CREDENTIALS_KEY,
-					{
-						group: groupId,
-					},
-				],
+				queryKey: [CREDENTIALS_KEY],
 			})
 			setMessage({
 				type: 'success',
@@ -113,15 +118,16 @@ const CredentialsGroup = ({ groupId }: { groupId: string }) => {
 					credentialsList &&
 					credentialsList?.map((credential) => (
 						<section key={credential.id} className="flex w-full gap-2">
-							<Select defaultValue={credential.environment} disabled>
+							<Select value={credential.environment} disabled>
 								<SelectTrigger className="max-w-40 p-2 h-7 disabled:cursor-default">
 									<SelectValue placeholder="Selecciona un entorno" />
 								</SelectTrigger>
 								<SelectContent>
-									<SelectItem value="LOCAL">Local</SelectItem>
-									<SelectItem value="DEV">Desarrollo</SelectItem>
-									<SelectItem value="PRE">Pre-producción</SelectItem>
-									<SelectItem value="PRO">Producción</SelectItem>
+									{environments.map(({ value, label }) => (
+										<SelectItem key={value} value={value}>
+											{label}
+										</SelectItem>
+									))}
 								</SelectContent>
 							</Select>
 							<div className="flex gap-2 w-full">
@@ -133,25 +139,39 @@ const CredentialsGroup = ({ groupId }: { groupId: string }) => {
 									onClick={() => {
 										setMessage({
 											type: 'success',
-											message: 'El texto ha sido copiado al portapapeles',
+											message: 'El usuario ha sido copiado al portapapeles',
 										})
 										navigator.clipboard.writeText(credential.username)
 									}}
 								/>
-								<Input
-									readOnly
-									value={credential.password}
-									className="justify-start h-7 pl-2 cursor-pointer"
-									placeholder="Contraseña"
-									type={showPassword ? 'text' : 'password'}
-									onClick={() => {
-										setMessage({
-											type: 'success',
-											message: 'El texto ha sido copiado al portapapeles',
-										})
-										navigator.clipboard.writeText(credential.password)
-									}}
-								/>
+								<div className="flex flex-col gap-2 w-full">
+									<Input
+										readOnly
+										value={credential.password}
+										className="justify-start h-7 pl-2 cursor-pointer"
+										placeholder="Contraseña"
+										type={showPassword ? 'text' : 'password'}
+										onClick={() => {
+											setMessage({
+												type: 'success',
+												message:
+													'La contraseña ha sido copiado al portapapeles',
+											})
+											navigator.clipboard.writeText(credential.password)
+										}}
+									/>
+									<Progress
+										value={(credential.passwordStrength / 4) * 100 || 5}
+										className={cn(
+											'h-[0.15rem] w-full',
+											credential.passwordStrength < 2
+												? 'bg-destructive'
+												: credential.passwordStrength < 3
+													? 'bg-orange-400'
+													: 'bg-primary',
+										)}
+									/>
+								</div>
 								<DialogForm
 									triggerText={<Pencil className="size-4" />}
 									title={`Edición URL:`}
@@ -168,7 +188,7 @@ const CredentialsGroup = ({ groupId }: { groupId: string }) => {
 									<CredentialsForm
 										groupId={groupId}
 										credentialsDetail={credential}
-										closeDialog={() => setOpenEditDialog(false)}
+										closeDialog={async () => setOpenEditDialog(false)}
 									/>
 								</DialogForm>
 								<ConfirmDialog

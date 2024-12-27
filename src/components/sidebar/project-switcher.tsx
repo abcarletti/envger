@@ -2,8 +2,6 @@
 
 import { ChevronsUpDown, Code, GalleryVerticalEnd, Plus } from 'lucide-react'
 
-import queryGetData from '@/app/services/query-request'
-import { getSelectorProjects } from '@/app/services/server-actions'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -21,6 +19,8 @@ import {
 import { PROJECTS_SELECTOR_KEY } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import { useProjectStore } from '@/providers/project-store-provider'
+import queryGetData from '@/services/query-request'
+import { getSelectorProjects } from '@/services/server-actions'
 import { Project } from '@prisma/client'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
@@ -54,7 +54,8 @@ export function ProjectSwitcher() {
 
 	useEffect(() => {
 		if (pathname.includes('/dashboard')) {
-			const slug = pathname.split('/dashboard/')[1]
+			const slugAux = pathname.split('/dashboard/')[1]
+			const slug = slugAux.split('/')[0]
 			if (slug && slug != 'create') {
 				const project = projects?.find((p: Project) => p.slug === slug)
 				if (project) {
@@ -73,7 +74,9 @@ export function ProjectSwitcher() {
 			<SidebarMenuButton
 				asChild
 				size="lg"
-				className={cn('hidden md:block', { 'bg-background': open })}
+				className={cn('hidden md:block', {
+					'bg-background': !open,
+				})}
 			>
 				<Link href="/dashboard" className="font-semibold">
 					{!open && (

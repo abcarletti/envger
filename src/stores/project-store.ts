@@ -1,4 +1,4 @@
-import { getProjectBySlug } from '@/app/services/server-actions'
+import { getProjectBySlug } from '@/services/server-actions'
 import { Project } from '@prisma/client'
 import { createStore } from 'zustand/vanilla'
 
