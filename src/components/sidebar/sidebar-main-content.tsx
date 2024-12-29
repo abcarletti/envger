@@ -83,18 +83,18 @@ export const SidebarMainContent = () => {
 						</SidebarMenuItem>
 						<Collapsible asChild defaultOpen className="group/collapsible">
 							<SidebarMenuItem>
-								<CollapsibleTrigger asChild>
-									<SidebarMenuButton
-										asChild
-										tooltip={`Grupos del proyecto ${project?.name}`}
-									>
-										<Link href={`/dashboard/${project?.slug}`}>
-											<FolderCode />
-											<span>Grupos</span>
-											<ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-										</Link>
-									</SidebarMenuButton>
-								</CollapsibleTrigger>
+								<SidebarMenuButton
+									asChild
+									tooltip={`Grupos del proyecto ${project?.name}`}
+								>
+									<Link href={`/dashboard/${project?.slug}`}>
+										<FolderCode />
+										<span>Grupos</span>
+										<CollapsibleTrigger asChild>
+											<ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 hover:rounded-full hover:bg-primary/70 hover:p-1" />
+										</CollapsibleTrigger>
+									</Link>
+								</SidebarMenuButton>
 								<CollapsibleContent>
 									<SidebarMenuSub>
 										{groups?.map((group) => (
