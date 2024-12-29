@@ -55,7 +55,7 @@ export function ProjectSwitcher() {
 	useEffect(() => {
 		if (pathname.includes('/dashboard')) {
 			const slugAux = pathname.split('/dashboard/')[1]
-			const slug = slugAux.split('/')[0]
+			const slug = slugAux?.split('/')[0]
 			if (slug && slug != 'create') {
 				const project = projects?.find((p: Project) => p.slug === slug)
 				if (project) {
