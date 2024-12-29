@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/sidebar'
 import * as React from 'react'
 import { ProjectSwitcher } from './project-switcher'
-import { SidebarGroups } from './sidebar-groups'
+import { SidebarMainContent } from './sidebar-main-content'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 	return (
@@ -17,9 +17,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				<ProjectSwitcher />
 			</SidebarHeader>
 			<SidebarContent className="my-6">
-				<SidebarGroups />
-				{/* <NavMain items={data.navMain} />
-				<NavProjects projects={data.projects} /> */}
+				<SidebarMainContent />
 			</SidebarContent>
 			<SidebarFooter>
 				<NavUser />

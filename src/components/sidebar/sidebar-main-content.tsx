@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils'
 import { useProjectStore } from '@/providers/project-store-provider'
 import queryGetData from '@/services/query-request'
 import { getProjectGroupsBySlug } from '@/services/server-actions'
-import { ChevronRight, FolderCode, X } from 'lucide-react'
+import { ChevronRight, FolderCode, NotebookPen, X } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -25,7 +25,7 @@ import {
 	SidebarMenuSubItem,
 } from '../ui/sidebar'
 
-export const SidebarGroups = () => {
+export const SidebarMainContent = () => {
 	const router = useRouter()
 	const pathname = usePathname()
 	const searchParams = useSearchParams()
@@ -70,6 +70,17 @@ export const SidebarGroups = () => {
 				<SidebarGroup>
 					{/* <SidebarGroupLabel>Grupos</SidebarGroupLabel> */}
 					<SidebarMenu>
+						<SidebarMenuItem>
+							<SidebarMenuButton
+								asChild
+								tooltip={`Notas del proyecto: ${project?.name}`}
+							>
+								<Link href={`/dashboard/${project?.slug}/notes`}>
+									<NotebookPen />
+									<span>Notas</span>
+								</Link>
+							</SidebarMenuButton>
+						</SidebarMenuItem>
 						<Collapsible asChild defaultOpen className="group/collapsible">
 							<SidebarMenuItem>
 								<CollapsibleTrigger asChild>
