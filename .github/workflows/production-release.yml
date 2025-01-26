@@ -122,7 +122,7 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/envger:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/envger:${{ steps.semantic.outputs.new_release_version }}
 
-      # - name: Trigger Portainer Update
-      #   if: steps.semantic.outputs.new_release_published == 'true'
-      #   run: |
-      #     curl -X POST ${{ secrets.PORTAINER_WEBHOOK_URL }}
+      - name: Trigger Portainer Update
+        if: steps.semantic.outputs.new_release_published == 'true'
+        run: |
+          curl -X POST ${{ secrets.PORTAINER_WEBHOOK_URL }}
