@@ -1,11 +1,11 @@
 'use client'
 
-import * as React from 'react'
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
 import { CheckIcon, DotFilledIcon } from '@radix-ui/react-icons'
+import * as React from 'react'
 
 import { cn } from '@/lib/utils'
-import { ChevronLeftIcon } from 'lucide-react'
+import { ChevronRightIcon } from 'lucide-react'
 
 const DropdownMenu = DropdownMenuPrimitive.Root
 
@@ -28,14 +28,14 @@ const DropdownMenuSubTrigger = React.forwardRef<
 	<DropdownMenuPrimitive.SubTrigger
 		ref={ref}
 		className={cn(
-			'flex cursor-default gap-2 select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent data-[state=open]:bg-accent',
+			'flex cursor-default justify-between gap-2 select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent data-[state=open]:bg-accent',
 			inset && 'pl-8',
 			className,
 		)}
 		{...props}
 	>
-		<ChevronLeftIcon className="size-4" />
 		{children}
+		<ChevronRightIcon className="size-4" />
 	</DropdownMenuPrimitive.SubTrigger>
 ))
 DropdownMenuSubTrigger.displayName =
@@ -185,18 +185,18 @@ DropdownMenuShortcut.displayName = 'DropdownMenuShortcut'
 
 export {
 	DropdownMenu,
-	DropdownMenuTrigger,
-	DropdownMenuContent,
-	DropdownMenuItem,
 	DropdownMenuCheckboxItem,
-	DropdownMenuRadioItem,
+	DropdownMenuContent,
+	DropdownMenuGroup,
+	DropdownMenuItem,
 	DropdownMenuLabel,
+	DropdownMenuPortal,
+	DropdownMenuRadioGroup,
+	DropdownMenuRadioItem,
 	DropdownMenuSeparator,
 	DropdownMenuShortcut,
-	DropdownMenuGroup,
-	DropdownMenuPortal,
 	DropdownMenuSub,
 	DropdownMenuSubContent,
 	DropdownMenuSubTrigger,
-	DropdownMenuRadioGroup,
+	DropdownMenuTrigger,
 }

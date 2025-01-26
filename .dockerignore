@@ -1,8 +1,8 @@
 node_modules
-.pnpm
-npm-debug.log
-Dockerfile
-.dockerignore
+dist
 .next
-docker-compose.yml
-.env
+*.log
+*.env
+coverage
+*.md
+Dockerfile

@@ -66,3 +66,7 @@ To publish image, run:
 ```bash
 docker push carletti/secret-notes:[VERSION]
 ```
+
+## Rich text editor
+
+[TipTap](https://tiptap.dev/docs/editor/getting-started/overview)

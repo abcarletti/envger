@@ -17,7 +17,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				<ProjectSwitcher />
 			</SidebarHeader>
 			<SidebarContent className="my-6">
-				<SidebarMainContent />
+				<React.Suspense>
+					<SidebarMainContent />
+				</React.Suspense>
 			</SidebarContent>
 			<SidebarFooter>
 				<NavUser />

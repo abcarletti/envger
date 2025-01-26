@@ -43,3 +43,43 @@ export const updateNoteGroup = async (
 
 	return noteEntity.note
 }
+
+export const updateNoteProject = async (
+	projectId: string | undefined,
+	note: any,
+): Promise<void> => {
+	if (!projectId) return
+	await prisma.projectNote.upsert({
+		where: {
+			projectId,
+		},
+		update: {
+			note,
+		},
+		create: {
+			note,
+			project: {
+				connect: {
+					id: projectId,
+				},
+			},
+		},
+	})
+}
+
+export const getNoteProject = async (
+	projectId: string | undefined,
+): Promise<any> => {
+	const session = await auth()
+
+	const noteEntity = await prisma.projectNote.findFirst({
+		where: {
+			projectId,
+			project: {
+				userId: session?.user.id,
+			},
+		},
+	})
+
+	return noteEntity?.note
+}

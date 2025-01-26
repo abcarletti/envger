@@ -91,7 +91,7 @@ CREATE TABLE "notes" (
 CREATE TABLE "project_notes" (
     "id" UUID NOT NULL,
     "project_id" UUID NOT NULL,
-    "note" TEXT NOT NULL,
+    "note" JSONB NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -103,6 +103,9 @@ CREATE INDEX "provider_username" ON "users"("provider", "username");
 
 -- CreateIndex
 CREATE INDEX "provider_email" ON "users"("provider", "email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_username_key" ON "users"("username");
 
 -- CreateIndex
 CREATE INDEX "user_id" ON "projects"("user_id");
