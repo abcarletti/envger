@@ -31,7 +31,7 @@ WORKDIR /app
 # Instalar pnpm globalmente y configurarlo
 RUN npm install -g pnpm@latest && \
 	pnpm config set store-dir /root/.local/share/pnpm/store
-
+  
 # Copiar solo las dependencias de producción desde el builder
 COPY --from=builder /app/node_modules ./node_modules
 
