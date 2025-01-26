@@ -1,61 +1,52 @@
 # Stage 1: Construcción de la aplicación
-FROM node:20-slim AS builder
+FROM node:22-slim AS builder
 
+# Establecer el directorio de trabajo
 WORKDIR /app
 
 # Instalar pnpm de manera global
 RUN npm install -g pnpm
 
-# Copiar solo los archivos de configuración primero para aprovechar el caché
-COPY package.json pnpm-lock.yaml ./
-COPY prisma ./prisma/
+# Copiar solo los archivos necesarios para instalar dependencias
+COPY pnpm-lock.yaml package.json ./
 
-# Instalar dependencias con caché de pnpm
+# Instalar las dependencias
 RUN pnpm install --frozen-lockfile
+
+# Copiar el resto del código fuente al contenedor, excluyendo archivos innecesarios
+COPY . .
 
 # Generar el cliente de Prisma
 RUN npx prisma generate
 
-# Copiar el resto del código fuente
-COPY . .
-
-# Construir la aplicación
+# Construir la aplicación para producción
 RUN pnpm run build
 
-# Stage 2: Imagen de producción
-FROM node:20-slim AS runner
+# Stage 2: Imagen para correr la aplicación
+FROM node:22-slim AS runner
 
+# Establecer el directorio de trabajo
 WORKDIR /app
 
-# Instalar pnpm y solo las dependencias de producción
-RUN npm install -g pnpm
+# Copiar solo las dependencias de producción desde el builder
+COPY --from=builder /app/node_modules ./node_modules
 
-# Copiar archivos de configuración
-COPY --from=builder /app/package.json /app/pnpm-lock.yaml ./
-RUN pnpm install --prod --frozen-lockfile
-
-# Copiar archivos necesarios desde el builder
+# Copiar la carpeta `.next` (build) y `public` desde el builder
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/next.config.mjs ./
-COPY --from=builder /app/prisma ./prisma
 
 # Copiar el cliente de Prisma generado
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/node_modules/.pnpm/@prisma+client@5.20.0_prisma@5.20.0/node_modules/.prisma ./node_modules/.prisma
 
-# Limpiar caché y archivos temporales
-RUN rm -rf /root/.npm /root/.pnpm-store /usr/local/share/.cache
+# Copiar solo configuraciones esenciales
+COPY --from=builder /app/next.config.mjs ./
 
-# Variables de entorno para producción
-ENV NODE_ENV=production
-ENV PORT=3000
+# Eliminar posibles archivos sobrantes
+RUN rm -rf /app/*.log
 
-# Exponer el puerto
+# Exponer el puerto de la aplicación
 EXPOSE 3000
 
-# Healthcheck para monitoreo
-HEALTHCHECK --interval=30s --timeout=3s \
-  CMD curl -f http://localhost:3000/api/health || exit 1
-
-# Comando para iniciar la aplicación
+# Comando para correr la aplicación
 CMD ["pnpm", "start"]
