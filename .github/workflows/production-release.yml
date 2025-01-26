@@ -7,6 +7,11 @@ on:
       - develop
       - main
 
+  # Evento para cuando se hace push a main (reemplaza pull_request_target)
+  push:
+    branches:
+      - main
+
   # Evento para cuando un Pull Request es cerrado (posible merge)
   pull_request_target:
     types:
@@ -48,10 +53,10 @@ jobs:
 
   # Job para ejecutar semantic-release cuando el PR es mergeado
   semantic-release:
-    # Se ejecuta cuando el evento es 'pull_request_target' y el PR fue mergeado en main
-    if: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main' }}
+    # Modificar la condición para ejecutar en push a main
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4.2.1
