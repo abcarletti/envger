@@ -28,6 +28,9 @@ FROM node:22-slim AS runner
 # Establecer el directorio de trabajo
 WORKDIR /app
 
+# Copiar solo los archivos necesarios para instalar dependencias
+COPY pnpm-lock.yaml package.json ./
+
 # Instalar pnpm de manera global
 RUN npm install -g pnpm
 
