@@ -80,8 +80,18 @@ jobs:
       - name: Semantic Release
         id: semantic
         uses: cycjimmy/semantic-release-action@v4.1.1
+        with:
+          extra_plugins: |
+            @semantic-release/git
+            @semantic-release/exec
+          dry_run: false
+          branches: |
+            ['main']
+          extends: |
+            false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EXTRA_ARGS: "--force"
 
       - name: Do something when a new release published
         if: steps.semantic.outputs.new_release_published == 'true'
