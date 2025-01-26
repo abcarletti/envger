@@ -1,14 +1,6 @@
 'use client'
 
-import {
-	BadgeCheck,
-	Bell,
-	ChevronsUpDown,
-	CreditCard,
-	LogOut,
-	Sparkles,
-	UserCircle,
-} from 'lucide-react'
+import { ChevronsUpDown, LogOut, UserCircle } from 'lucide-react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
@@ -24,6 +16,7 @@ import {
 
 import { SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
 import { signOut } from 'next-auth/react'
+import { ThemeSelector } from '../theme-selector'
 import { Button } from '../ui/button'
 
 interface UserItemProps {
@@ -83,25 +76,7 @@ export default function UserItem({
 					</DropdownMenuLabel>
 					<DropdownMenuSeparator />
 					<DropdownMenuGroup>
-						<DropdownMenuItem>
-							<Sparkles />
-							Upgrade to Pro
-						</DropdownMenuItem>
-					</DropdownMenuGroup>
-					<DropdownMenuSeparator />
-					<DropdownMenuGroup>
-						<DropdownMenuItem>
-							<BadgeCheck />
-							Account
-						</DropdownMenuItem>
-						<DropdownMenuItem>
-							<CreditCard />
-							Billing
-						</DropdownMenuItem>
-						<DropdownMenuItem>
-							<Bell />
-							Notifications
-						</DropdownMenuItem>
+						<ThemeSelector />
 					</DropdownMenuGroup>
 					<DropdownMenuSeparator />
 					<DropdownMenuItem>

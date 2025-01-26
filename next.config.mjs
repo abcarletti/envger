@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+	output: 'standalone',
+	compress: true,
 	reactStrictMode: true,
 	swcMinify: true,
 	trailingSlash: false,

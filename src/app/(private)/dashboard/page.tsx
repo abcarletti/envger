@@ -4,7 +4,6 @@ import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
 import { PROJECT_KEY, PROJECTS_SELECTOR_KEY } from '@/lib/constants'
 import { cn } from '@/lib/utils'
-import { EmailPathTemplates } from '@/models/email'
 import { queryClient } from '@/providers/tanstack-query'
 import queryGetData from '@/services/query-request'
 import {
@@ -14,7 +13,6 @@ import {
 import { Project } from '@prisma/client'
 import { Star } from 'lucide-react'
 import Link from 'next/link'
-import { useEffect } from 'react'
 
 export default function DashboardPage() {
 	const { data: projects, isLoading } = queryGetData<Project[]>(
@@ -36,23 +34,6 @@ export default function DashboardPage() {
 			queryKey: [PROJECTS_SELECTOR_KEY],
 		})
 	}
-
-	useEffect(() => {
-		const sendWelcomeEmail = async () => {
-			const res = await fetch('/api/send-email', {
-				method: 'POST',
-				body: JSON.stringify({
-					email: 'bolado.angel@gmail.com',
-					name: 'Angel Bolado Carletti',
-					template: EmailPathTemplates.WELCOME,
-					subject: 'Prueba de envío de correo',
-				}),
-			})
-			console.log(res)
-		}
-		sendWelcomeEmail()
-	}, [])
-
 	return (
 		<div className="flex items-center justify-center flex-1">
 			<section className="flex flex-col bg-secondary w-10/12 md:w-9/12 lg:w-5/6 xl:w-7/12 rounded-md p-4 h-4/6 gap-4">
