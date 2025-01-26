@@ -28,8 +28,8 @@ FROM node:22-slim AS runner
 # Establecer el directorio de trabajo
 WORKDIR /app
 
-# Copiar el binario de pnpm desde el builder
-COPY --from=builder /usr/local/bin/pnpm /usr/local/bin/pnpm
+# Instalar pnpm de manera global
+RUN npm install -g pnpm
 
 # Copiar solo las dependencias de producción desde el builder
 COPY --from=builder /app/node_modules ./node_modules
