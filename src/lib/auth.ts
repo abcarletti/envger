@@ -79,7 +79,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 					console.log('profile: ', profile)
 					let user = await prisma.user.findFirst({
 						where: {
-							username: <string>profile?.login,
+							username: <string>profile?.email,
 						},
 					})
 					if (user && user.provider !== Provider.GITHUB) {
