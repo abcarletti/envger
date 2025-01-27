@@ -16,7 +16,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 				username: {},
 				password: {},
 			},
-			authorize: async (credentials) => {
+			authorize: async (credentials: any) => {
 				const { username, password } =
 					await signInSchema.parseAsync(credentials)
 
@@ -67,15 +67,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 		signIn: '/login',
 	},
 	callbacks: {
-		authorized: async ({ auth, request }) => {
+		authorized: async ({ auth, request }: any) => {
 			if (request.url.match(/\/dashboard\/*/)) {
 				return !!auth
 			}
 			return true
 		},
-		jwt: async ({ token, user, account, profile, trigger }) => {
+		jwt: async ({ token, user, account, profile, trigger }: any) => {
 			if (trigger === 'signIn') {
 				if (account?.provider === 'github') {
+					console.log('profile: ', profile)
 					let user = await prisma.user.findFirst({
 						where: {
 							username: <string>profile?.login,
@@ -115,7 +116,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 			}
 			return token
 		},
-		session: async ({ session, token }) => {
+		session: async ({ session, token }: any) => {
 			const auxSession = {
 				...session,
 				user: {
