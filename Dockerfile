@@ -50,7 +50,7 @@ COPY --from=builder /app/next.config.mjs ./
 
 # Eliminar posibles archivos sobrantes
 RUN rm -rf /app/*.log
-RUN apt-get update -y && apt-get install -y openssl
+RUN apt-get update -y && apt-get install -y openssl curl
 
 # Exponer el puerto de la aplicación
 EXPOSE 3000
