@@ -43,6 +43,7 @@ export default function GroupArticle({
 	const [openCredentialsDialog, setOpenCredentialsDialog] = useState(false)
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
 	const { name, description } = group
+	const [showNote, setShowNote] = useState(false)
 
 	const closeDialog = () => {
 		setDialogOpen(false)
@@ -138,7 +139,7 @@ export default function GroupArticle({
 						</div>
 					}
 				>
-					<NotesGroup groupId={group.id} />
+					<NotesGroup groupId={group.id} showNote={showNote} />
 				</Suspense>
 				<footer className="flex justify-end gap-2 pt-4 text-primary">
 					<DialogForm
@@ -171,6 +172,13 @@ export default function GroupArticle({
 							closeDialog={() => setOpenCredentialsDialog(false)}
 						/>
 					</DialogForm>
+					<Button
+						size={'sm'}
+						variant={'outline'}
+						onClick={() => setShowNote(!showNote)}
+					>
+						{showNote ? 'Ocultar notas' : 'Mostrar notas'}
+					</Button>
 				</footer>
 			</article>
 			<ConfirmDialog

@@ -255,7 +255,10 @@ export const ContactButton = () => {
 										<FormItem>
 											<FormLabel>Mensaje</FormLabel>
 											<FormControl>
-												<AutoSizeTextarea {...field} />
+												<AutoSizeTextarea
+													{...field}
+													className="bg-transparent"
+												/>
 											</FormControl>
 											<FormMessage />
 										</FormItem>
