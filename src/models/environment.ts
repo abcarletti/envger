@@ -20,3 +20,7 @@ export const environments = [
 		label: 'Producción',
 	},
 ] as const
+
+export const composeEnvironmentName = (environment: string) => {
+	return environments.find((env) => env.value === environment)?.label
+}

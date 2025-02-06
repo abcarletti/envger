@@ -4,7 +4,7 @@ import CredentialsForm from '@/forms/credentials-form'
 import { useToast } from '@/hooks/use-toast'
 import { CREDENTIALS_KEY } from '@/lib/constants'
 import { cn } from '@/lib/utils'
-import { environments } from '@/models/environment'
+import { composeEnvironmentName } from '@/models/environment'
 import { queryClient } from '@/providers/tanstack-query'
 import { deleteCredentials } from '@/services/credentials-service'
 import { getCredentialsGroup } from '@/services/group-service'
@@ -16,18 +16,16 @@ import { useEffect, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
 import zxcvbn from 'zxcvbn'
 import ConfirmDialog from './confirm-dialog'
-import DialogForm from './form-dialog'
 import { Button, buttonVariants } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { Progress } from './ui/progress'
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from './ui/select'
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from './ui/tooltip'
 
 interface CredentialResult extends Credentials {
 	passwordStrength: number
@@ -39,7 +37,6 @@ const CredentialsGroup = ({ groupId }: { groupId: string }) => {
 	const [credentialsList, setCredentialsList] = useState<
 		CredentialResult[] | null
 	>(null)
-	const [openEditDialog, setOpenEditDialog] = useState(false)
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
 
 	const { data, isLoading } = queryGetData<Credentials[]>(
@@ -102,10 +99,10 @@ const CredentialsGroup = ({ groupId }: { groupId: string }) => {
 					<Label className="text-md text-gray-400">Credenciales</Label>
 					<Button
 						variant={'outline'}
-						size={'icon'}
+						size={'icon-sm'}
 						type="button"
 						onClick={() => setShowPassword(!showPassword)}
-						className="h-7 min-w-9"
+						className="min-w-7"
 					>
 						{showPassword ? (
 							<EyeOff className="size-5" />
@@ -118,37 +115,38 @@ const CredentialsGroup = ({ groupId }: { groupId: string }) => {
 					credentialsList &&
 					credentialsList?.map((credential) => (
 						<section key={credential.id} className="flex w-full gap-2">
-							<Select value={credential.environment} disabled>
-								<SelectTrigger className="max-w-40 p-2 h-7 disabled:cursor-default">
-									<SelectValue placeholder="Selecciona un entorno" />
-								</SelectTrigger>
-								<SelectContent>
-									{environments.map(({ value, label }) => (
-										<SelectItem key={value} value={value}>
-											{label}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
+							<Label className="min-w-[110px] pl-2 h-7 text-gray-300 items-center flex text-xs">
+								{composeEnvironmentName(credential.environment)}
+							</Label>
 							<div className="flex gap-2 w-full">
-								<Input
-									readOnly
-									value={credential.username}
-									className="justify-start h-7 pl-2 cursor-pointer"
-									placeholder="Nombre"
-									onClick={() => {
-										setMessage({
-											type: 'success',
-											message: 'El usuario ha sido copiado al portapapeles',
-										})
-										navigator.clipboard.writeText(credential.username)
-									}}
-								/>
-								<div className="flex flex-col gap-2 w-full">
+								<TooltipProvider>
+									<Tooltip>
+										<TooltipTrigger asChild>
+											<Input
+												readOnly
+												value={credential.username}
+												className="justify-start h-7 pl-2 cursor-pointer"
+												placeholder="Nombre"
+												onClick={() => {
+													setMessage({
+														type: 'success',
+														message:
+															'El usuario ha sido copiado al portapapeles',
+													})
+													navigator.clipboard.writeText(credential.username)
+												}}
+											/>
+										</TooltipTrigger>
+										<TooltipContent>
+											<p>{credential.username}</p>
+										</TooltipContent>
+									</Tooltip>
+								</TooltipProvider>
+								<div className="relative w-full">
 									<Input
 										readOnly
 										value={credential.password}
-										className="justify-start h-7 pl-2 cursor-pointer"
+										className="justify-start h-7 pl-2 cursor-pointer rounded-b-sm"
 										placeholder="Contraseña"
 										type={showPassword ? 'text' : 'password'}
 										onClick={() => {
@@ -160,46 +158,42 @@ const CredentialsGroup = ({ groupId }: { groupId: string }) => {
 											navigator.clipboard.writeText(credential.password)
 										}}
 									/>
-									<Progress
-										value={(credential.passwordStrength / 4) * 100 || 5}
-										className={cn(
-											'h-[0.15rem] w-full',
-											credential.passwordStrength < 2
-												? 'bg-destructive'
-												: credential.passwordStrength < 3
-													? 'bg-orange-400'
-													: 'bg-primary',
-										)}
-									/>
+									<div className="absolute bottom-0 left-0 right-0">
+										<Progress
+											value={(credential.passwordStrength / 4) * 100 || 5}
+											className={cn(
+												'h-[0.15rem] w-full rounded-b-3xl',
+												credential.passwordStrength < 2
+													? 'bg-destructive'
+													: credential.passwordStrength < 3
+														? 'bg-orange-400'
+														: 'bg-primary',
+											)}
+										/>
+									</div>
 								</div>
-								<DialogForm
-									triggerText={<Pencil className="size-4" />}
+								<CredentialsForm
+									groupId={groupId}
+									credentialsDetail={credential}
+									triggerText={<Pencil />}
 									title={`Edición URL:`}
 									className={twMerge(
 										buttonVariants({
-											size: 'icon',
+											size: 'icon-sm',
 											variant: 'outline',
 										}),
-										'h-7 min-w-7',
+										'min-w-7',
 									)}
-									isDialogOpen={openEditDialog}
-									handleDialogOpen={setOpenEditDialog}
-								>
-									<CredentialsForm
-										groupId={groupId}
-										credentialsDetail={credential}
-										closeDialog={async () => setOpenEditDialog(false)}
-									/>
-								</DialogForm>
+								/>
 								<ConfirmDialog
 									showTrigger={true}
-									buttonContent={<Trash className="size-4" />}
+									buttonContent={<Trash />}
 									buttonStyle={twMerge(
 										buttonVariants({
-											size: 'icon',
+											size: 'icon-sm',
 											variant: 'destructive',
 										}),
-										'h-7 min-w-7',
+										'min-w-7',
 									)}
 									title={`Eliminar credenciales`}
 									content="¿Estás seguro de que deseas eliminar estas credenciales?"

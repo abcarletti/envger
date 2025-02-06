@@ -26,7 +26,9 @@ const NotesGroup = ({ groupId, showNote }: Props) => {
 	)
 
 	useEffect(() => {
-		if (note) setText(note)
+		if (note) {
+			setText(note)
+		}
 	}, [note])
 
 	const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -45,7 +47,7 @@ const NotesGroup = ({ groupId, showNote }: Props) => {
 
 	return (
 		<>
-			{text || showNote ? (
+			{showNote ? (
 				<section className="flex flex-col gap-3 w-full px-2 mt-2">
 					<div className="flex flex-col gap-[4px] w-full">
 						<Label className="text-md text-gray-400">Notas</Label>

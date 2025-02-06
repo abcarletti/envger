@@ -7,7 +7,6 @@ import { Suspense, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
 import ConfirmDialog from './confirm-dialog'
 import CredentialsGroup from './credentials-group'
-import DialogForm from './form-dialog'
 import NotesGroup from './notes-group'
 import { Button, buttonVariants } from './ui/button'
 import {
@@ -39,8 +38,6 @@ export default function GroupArticle({
 	handleDeleteGroup: () => void
 }) {
 	const [dialogOpen, setDialogOpen] = useState(false)
-	const [openUrlDialog, setOpenUrlDialog] = useState(false)
-	const [openCredentialsDialog, setOpenCredentialsDialog] = useState(false)
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
 	const { name, description } = group
 	const [showNote, setShowNote] = useState(false)
@@ -53,7 +50,7 @@ export default function GroupArticle({
 	return (
 		<>
 			<article className="flex flex-col xl:flex-1 items-center min-h-24 bg-muted/30 border-[1px] border-muted rounded-lg py-2 xl:max-w-group">
-				<div className="flex flex-1 w-full justify-between px-4">
+				<div className="flex w-full justify-between px-4">
 					<div className="flex flex-col gap-[4px] w-full">
 						<Label className="text-xl">{name}</Label>
 						{description && (
@@ -99,79 +96,69 @@ export default function GroupArticle({
 						</Dialog>
 					</div>
 				</div>
-				<Suspense
-					fallback={
-						<div className="flex w-full p-2">
-							<section className="flex w-full gap-2">
-								<Skeleton className="h-8 min-w-44 bg-primary/40" />
-								<div className="flex w-full">
-									<Skeleton className="h-8 w-full bg-primary/40" />
-								</div>
-							</section>
-						</div>
-					}
-				>
-					<UrlsGroup groupId={group.id} />
-				</Suspense>
-				<Suspense
-					fallback={
-						<div className="flex w-full p-2">
-							<section className="flex w-full gap-2">
-								<Skeleton className="h-8 min-w-44 bg-primary/40" />
-								<div className="flex w-full">
-									<Skeleton className="h-8 w-full bg-primary/40" />
-								</div>
-							</section>
-						</div>
-					}
-				>
-					<CredentialsGroup groupId={group.id} />
-				</Suspense>
-				<Suspense
-					fallback={
-						<div className="flex w-full p-2">
-							<section className="flex w-full gap-2">
-								<Skeleton className="h-8 min-w-44 bg-primary/40" />
-								<div className="flex w-full">
-									<Skeleton className="h-8 w-full bg-primary/40" />
-								</div>
-							</section>
-						</div>
-					}
-				>
-					<NotesGroup groupId={group.id} showNote={showNote} />
-				</Suspense>
-				<footer className="flex justify-end gap-2 pt-4 text-primary">
-					<DialogForm
+				<div className="w-full flex flex-col p-4 justify-start">
+					<Suspense
+						fallback={
+							<div className="flex w-full p-2">
+								<section className="flex w-full gap-2">
+									<Skeleton className="h-8 min-w-44 bg-primary/40" />
+									<div className="flex w-full">
+										<Skeleton className="h-8 w-full bg-primary/40" />
+									</div>
+								</section>
+							</div>
+						}
+					>
+						<UrlsGroup groupId={group.id} />
+					</Suspense>
+					<Suspense
+						fallback={
+							<div className="flex w-full p-2">
+								<section className="flex w-full gap-2">
+									<Skeleton className="h-8 min-w-44 bg-primary/40" />
+									<div className="flex w-full">
+										<Skeleton className="h-8 w-full bg-primary/40" />
+									</div>
+								</section>
+							</div>
+						}
+					>
+						<CredentialsGroup groupId={group.id} />
+					</Suspense>
+					<Suspense
+						fallback={
+							<div className="flex w-full p-2">
+								<section className="flex w-full gap-2">
+									<Skeleton className="h-8 min-w-44 bg-primary/40" />
+									<div className="flex w-full">
+										<Skeleton className="h-8 w-full bg-primary/40" />
+									</div>
+								</section>
+							</div>
+						}
+					>
+						<NotesGroup groupId={group.id} showNote={showNote} />
+					</Suspense>
+				</div>
+				<footer className="flex gap-2 pt-4 text-primary justify-end items-end flex-1">
+					<UrlForm
+						groupId={group.id}
 						triggerText={'Añadir URL'}
 						title={`Crear URL del grupo: ${group.name}`}
 						className={buttonVariants({
 							size: 'sm',
 							variant: 'outline',
 						})}
-						isDialogOpen={openUrlDialog}
-						handleDialogOpen={setOpenUrlDialog}
-					>
-						<UrlForm
-							groupId={group.id}
-							closeDialog={() => setOpenUrlDialog(false)}
-						/>
-					</DialogForm>
-					<DialogForm
+					/>
+					<CredentialsForm
+						groupId={group.id}
 						triggerText={'Añadir credenciales'}
 						title={`Crear credenciales del grupo: ${group.name}`}
 						className={buttonVariants({
 							size: 'sm',
 							variant: 'outline',
 						})}
-						isDialogOpen={openCredentialsDialog}
-						handleDialogOpen={setOpenCredentialsDialog}
-					>
-						<CredentialsForm
-							groupId={group.id}
-							closeDialog={() => setOpenCredentialsDialog(false)}
-						/>
-					</DialogForm>
+					/>
 					<Button
 						size={'sm'}
 						variant={'outline'}

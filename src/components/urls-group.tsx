@@ -4,7 +4,7 @@ import UrlForm from '@/forms/url-form'
 import { useToast } from '@/hooks/use-toast'
 import { URLS_KEY } from '@/lib/constants'
 import { cn } from '@/lib/utils'
-import { environments } from '@/models/environment'
+import { composeEnvironmentName } from '@/models/environment'
 import { queryClient } from '@/providers/tanstack-query'
 import { getUrlsGroup } from '@/services/group-service'
 import queryGetData from '@/services/query-request'
@@ -15,20 +15,17 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { twMerge } from 'tailwind-merge'
 import ConfirmDialog from './confirm-dialog'
-import DialogForm from './form-dialog'
 import { Button, buttonVariants } from './ui/button'
 import { Label } from './ui/label'
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from './ui/select'
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from './ui/tooltip'
 
 const UrlsGroup = ({ groupId }: { groupId: string }) => {
 	const { setMessage } = useToast()
-	const [openEditDialog, setOpenEditDialog] = useState(false)
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
 
 	const { data: urls, isLoading } = queryGetData<Url[]>(
@@ -82,61 +79,64 @@ const UrlsGroup = ({ groupId }: { groupId: string }) => {
 							key={`urls-${url.id}`}
 							className="flex w-full gap-2 flex-col md:flex-row"
 						>
-							<Select defaultValue={url.environment} disabled>
-								<SelectTrigger className="max-w-40 p-2 h-7 disabled:cursor-default">
-									<SelectValue placeholder="Selecciona un entorno" />
-								</SelectTrigger>
-								<SelectContent>
-									{environments.map(({ value, label }) => (
-										<SelectItem key={value} value={value}>
-											{label}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-							<div className="flex w-full gap-2">
+							<Label className="min-w-[110px] pl-2 h-7 text-gray-300 items-center flex text-xs">
+								{composeEnvironmentName(url.environment)}
+							</Label>
+							<div className="flex w-full gap-2 max-w-full overflow-hidden">
 								<Button
 									variant={'outline'}
 									asChild
-									className="justify-start h-7 pl-2"
+									className="justify-start h-7 pl-2 max-w-full w-full"
 								>
 									<Link
 										href={url.url}
 										target="_blank"
-										className="flex w-full gap-2 items-center bg-transparent"
+										className="flex w-full gap-2 items-center bg-transparent overflow-clip pr-2"
 									>
-										{url.url}
-										<ExternalLink className="size-3" />
+										<TooltipProvider>
+											<Tooltip>
+												<TooltipTrigger
+													className="max-w-[95%] min-w-[95%] overflow-clip"
+													asChild
+												>
+													<Label>{url.url}</Label>
+												</TooltipTrigger>
+												<TooltipContent>
+													<p>{url.url}</p>
+												</TooltipContent>
+											</Tooltip>
+										</TooltipProvider>
+
+										<div className="flex w-full justify-end">
+											<ExternalLink className="!size-3 justify-end" />
+										</div>
 									</Link>
 								</Button>
-								<DialogForm
-									triggerText={<Pencil className="size-4" />}
+							</div>
+							<div className="flex gap-1">
+								<UrlForm
+									groupId={groupId}
+									urlDetail={url}
+									key={`url-dialog-${groupId}`}
+									triggerText={<Pencil />}
 									title={`Edición URL: ${url.environment} - ${url.url}`}
 									className={twMerge(
 										buttonVariants({
-											size: 'icon',
+											size: 'icon-sm',
 											variant: 'outline',
 										}),
-										'h-7 max-w-9',
+										'min-w-7',
 									)}
-									isDialogOpen={openEditDialog}
-									handleDialogOpen={setOpenEditDialog}
-								>
-									<UrlForm
-										groupId={groupId}
-										urlDetail={url}
-										closeDialog={() => setOpenEditDialog(false)}
-									/>
-								</DialogForm>
+								/>
 								<ConfirmDialog
 									showTrigger={true}
-									buttonContent={<Trash className="size-4" />}
+									buttonContent={<Trash />}
 									buttonStyle={twMerge(
 										buttonVariants({
-											size: 'icon',
+											size: 'icon-sm',
 											variant: 'destructive',
 										}),
-										'h-7 max-w-9',
+										'min-w-7',
 									)}
 									title={`Eliminar URL: ${url.environment} - ${url.url}`}
 									content="¿Estás seguro de que deseas eliminar esta URL?"

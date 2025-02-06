@@ -7,9 +7,13 @@ import { useProjectStore } from '@/providers/project-store-provider'
 import { updateNoteProject } from '@/services/note-service'
 import BulletList from '@tiptap/extension-bullet-list'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
+import Document from '@tiptap/extension-document'
+import Heading from '@tiptap/extension-heading'
 import Highlight from '@tiptap/extension-highlight'
 import ListItem from '@tiptap/extension-list-item'
 import OrderedList from '@tiptap/extension-ordered-list'
+import Paragraph from '@tiptap/extension-paragraph'
+import Text from '@tiptap/extension-text'
 import TextAlign from '@tiptap/extension-text-align'
 import Underline from '@tiptap/extension-underline'
 import { EditorContent, JSONContent, useEditor } from '@tiptap/react'
@@ -72,10 +76,15 @@ const RichTextEditor = ({ initialProjectNote }: RichTextEditorProps) => {
 				defaultLanguage: 'javascript',
 				languageClassPrefix: 'language-',
 			}),
+			Document,
+			Paragraph,
+			Text,
+			Heading.configure({
+				levels: [1, 2, 3],
+			}),
 		],
 		content: projectNote,
 		onUpdate: ({ editor }) => {
-			console.log(editor.getJSON())
 			const content = JSON.stringify(editor.getJSON())
 			setProjectNote(JSON.parse(content))
 		},

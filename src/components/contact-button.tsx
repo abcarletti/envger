@@ -42,7 +42,7 @@ export const ContactButton = () => {
 	const onSubmit = async (values: z.infer<typeof contactSchema>) => {
 		try {
 			await sendMail({
-				sendTo: values.email,
+				sendTo: 'bolado.angel@gmail.com',
 				subject: 'Envger - Contacto',
 				html: `<!doctype html>
 <html lang="en">
@@ -258,6 +258,7 @@ export const ContactButton = () => {
 												<AutoSizeTextarea
 													{...field}
 													className="bg-transparent"
+													placeholder="Mensaje"
 												/>
 											</FormControl>
 											<FormMessage />
