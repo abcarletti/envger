@@ -1,6 +1,6 @@
 {
 	"name": "secret-notes",
-	"version": "1.0.14",
+	"version": "1.0.15",
 	"private": false,
 	"scripts": {
 		"dev": "next dev",
