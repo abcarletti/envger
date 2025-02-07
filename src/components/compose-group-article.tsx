@@ -140,7 +140,7 @@ export default function GroupArticle({
 						<NotesGroup groupId={group.id} showNote={showNote} />
 					</Suspense>
 				</div>
-				<footer className="flex gap-2 pt-4 text-primary justify-end items-end flex-1 w-full">
+				<footer className="flex gap-2 pt-4 text-primary justify-center items-end flex-1 w-full">
 					<UrlForm
 						groupId={group.id}
 						triggerText={'Añadir URL'}
