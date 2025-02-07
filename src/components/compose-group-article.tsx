@@ -49,7 +49,7 @@ export default function GroupArticle({
 
 	return (
 		<>
-			<article className="flex flex-col flex-1 items-center min-h-24 bg-muted/30 border-[1px] border-muted rounded-lg py-2 xl:max-w-group">
+			<article className="flex flex-col flex-1 items-center min-h-24 bg-muted/30 border-[1px] border-muted rounded-lg py-2 xl:max-w-group min-h-max">
 				<div className="flex w-full justify-between px-4">
 					<div className="flex flex-col gap-[4px] w-full">
 						<Label className="text-xl">{name}</Label>
@@ -58,45 +58,47 @@ export default function GroupArticle({
 						)}
 						<Separator className="flex bg-primary w-2/12" />
 					</div>
-					<div className="">
-						<Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-							<DropdownMenu>
-								<DropdownMenuTrigger className="flex items-center focus:outline-none mt-2">
-									<Settings className="size-4" />
-								</DropdownMenuTrigger>
-								<DropdownMenuContent>
-									<DropdownMenuItem className="p-0">
-										<DialogTrigger className="w-full" asChild>
-											<Button size={'sm'} variant={'ghost'} className="w-full">
-												Editar
-											</Button>
-										</DialogTrigger>
-									</DropdownMenuItem>
-									<DropdownMenuItem className="p-0">
+					<Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+						<DropdownMenu>
+							<DropdownMenuTrigger className="flex items-center focus:outline-none mt-2">
+								<Settings className="size-4" />
+							</DropdownMenuTrigger>
+							<DropdownMenuContent>
+								<DropdownMenuItem className="p-0">
+									<DialogTrigger className="w-full" asChild>
 										<Button
 											size={'sm'}
-											variant={'destructive'}
-											className="w-full"
-											onClick={() => setOpenDeleteDialog(true)}
+											variant={'ghost'}
+											className="w-full justify-start"
 										>
-											Eliminar
+											Editar
 										</Button>
-									</DropdownMenuItem>
-								</DropdownMenuContent>
-							</DropdownMenu>
-							<DialogContent className="sm:max-w-md">
-								<DialogHeader>
-									<DialogTitle>Editar grupo: {group.name}</DialogTitle>
-									<DialogDescription>
-										Modifica los valores del grupo
-									</DialogDescription>
-								</DialogHeader>
-								<GroupForm group={group} dialogOpen={closeDialog} />
-							</DialogContent>
-						</Dialog>
-					</div>
+									</DialogTrigger>
+								</DropdownMenuItem>
+								<DropdownMenuItem className="p-0">
+									<Button
+										size={'sm'}
+										variant={'destructive'}
+										className="w-full justify-start"
+										onClick={() => setOpenDeleteDialog(true)}
+									>
+										Eliminar
+									</Button>
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
+						<DialogContent className="sm:max-w-md">
+							<DialogHeader>
+								<DialogTitle>Editar grupo: {group.name}</DialogTitle>
+								<DialogDescription>
+									Modifica los valores del grupo
+								</DialogDescription>
+							</DialogHeader>
+							<GroupForm group={group} dialogOpen={closeDialog} />
+						</DialogContent>
+					</Dialog>
 				</div>
-				<div className="w-full flex flex-col p-4 justify-start">
+				<div className="w-full flex flex-col p-2 pb-0 justify-start">
 					<Suspense
 						fallback={
 							<div className="flex w-full p-2">

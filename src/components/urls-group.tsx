@@ -75,28 +75,25 @@ const UrlsGroup = ({ groupId }: { groupId: string }) => {
 				{!isLoading &&
 					urls &&
 					urls.map((url) => (
-						<section
-							key={`urls-${url.id}`}
-							className="flex w-full gap-2 flex-col md:flex-row"
-						>
+						<section key={`urls-${url.id}`} className="flex w-full gap-2">
 							<Label className="min-w-[110px] pl-2 h-7 text-gray-300 items-center flex text-xs">
 								{composeEnvironmentName(url.environment)}
 							</Label>
-							<div className="flex w-full gap-2 max-w-full overflow-hidden">
+							<div className="flex w-full gap-2 overflow-hidden">
 								<Button
 									variant={'outline'}
 									asChild
-									className="justify-start h-7 pl-2 max-w-full w-full"
+									className="justify-start h-7 pl-2 w-full"
 								>
 									<Link
 										href={url.url}
 										target="_blank"
-										className="flex w-full gap-2 items-center bg-transparent overflow-clip pr-2"
+										className="flex gap-2 items-center bg-transparent overflow-clip pr-2"
 									>
 										<TooltipProvider>
 											<Tooltip>
 												<TooltipTrigger
-													className="max-w-[95%] min-w-[95%] overflow-clip"
+													className="max-w-[95%] w-full overflow-clip"
 													asChild
 												>
 													<Label>{url.url}</Label>
@@ -107,7 +104,7 @@ const UrlsGroup = ({ groupId }: { groupId: string }) => {
 											</Tooltip>
 										</TooltipProvider>
 
-										<div className="flex w-full justify-end">
+										<div className="flex justify-end">
 											<ExternalLink className="!size-3 justify-end" />
 										</div>
 									</Link>

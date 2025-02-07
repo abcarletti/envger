@@ -82,7 +82,7 @@ export default function ProjectGroups() {
 					sections.push(
 						<div
 							key={`section-${firstElement.id}`}
-							className="flex flex-col xl:flex-row flex-wrap gap-2 w-full items-stretch"
+							className="flex flex-col xl:flex-row gap-2 w-full items-stretch "
 						>
 							<GroupArticle
 								key={`first-${firstElement.id}`}

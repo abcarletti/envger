@@ -128,19 +128,6 @@ export default function CreateDashboardPage() {
 									</FormItem>
 								)}
 							/>
-							{/* <FormField
-								control={form.control}
-								name="imageUrl"
-								render={({ field }) => (
-									<FormItem className="w-full">
-										<FormLabel>Logo URL</FormLabel>
-										<FormControl>
-											<Input {...field} />
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/> */}
 							<footer className="flex flex-row-reverse mt-4 gap-2">
 								<Button type="submit" size={'lg'} className="w-full">
 									Guardar
