@@ -65,13 +65,13 @@ const UrlsGroup = ({ groupId }: { groupId: string }) => {
 	return (
 		<div className="flex w-full p-2 items-center justify-center mt-2 py-2">
 			<div className="flex flex-col gap-2 w-full">
-				<div
-					className={cn('flex flex-col mb-2', {
+				<Label
+					className={cn('text-md text-gray-400 mb-1', {
 						hidden: !urls || urls.length === 0,
 					})}
 				>
-					<Label className="text-md text-gray-400">URLs</Label>
-				</div>
+					URLs
+				</Label>
 				{!isLoading &&
 					urls &&
 					urls.map((url) => (

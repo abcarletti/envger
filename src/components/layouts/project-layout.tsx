@@ -109,7 +109,7 @@ export default function ProjectLayout({ slug, children }: ProjectLayoutProps) {
 			{isLoadingProjects && <Skeleton className="bg-primary/80 min-w-56 h-9" />}
 			{!isLoadingProjects && project && (
 				<section className="flex flex-col flex-1 overflow-hidden h-full bg-background">
-					<div className="flex justify-between">
+					<div className="flex justify-between mb-2">
 						<div className="grid grid-cols-2 md:flex gap-3 flex-col md:flex-row md:items-center">
 							<div className="flex gap-3 items-center">
 								<Star
@@ -186,7 +186,7 @@ export default function ProjectLayout({ slug, children }: ProjectLayoutProps) {
 							</Dialog>
 						</div>
 					</div>
-					<div className="flex flex-1 flex-col gap-2 items-center rounded-lg mt-4 overflow-auto h-full">
+					<div className="flex flex-1 flex-col gap-2 items-center rounded-lg overflow-auto h-full">
 						{children}
 					</div>
 				</section>
