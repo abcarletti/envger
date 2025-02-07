@@ -10,42 +10,42 @@ import { z } from 'zod'
 import { AutoSizeTextarea } from './ui/auto-size-textarea'
 import { Button } from './ui/button'
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
 } from './ui/form'
 import { Input } from './ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
 
 export const ContactButton = () => {
-  const [open, setOpen] = useState(false)
-  const contactSchema = z.object({
-    name: z.string().min(1, 'El nombre es obligatorio'),
-    email: z.string().email('El email es inválido'),
-    message: z.string().min(1, 'El mensaje es obligatorio'),
-  })
+	const [open, setOpen] = useState(false)
+	const contactSchema = z.object({
+		name: z.string().min(1, 'El nombre es obligatorio'),
+		email: z.string().email('El email es inválido'),
+		message: z.string().min(1, 'El mensaje es obligatorio'),
+	})
 
-  const form = useForm<z.infer<typeof contactSchema>>({
-    resolver: zodResolver(contactSchema),
-    defaultValues: {
-      name: '',
-      email: '',
-      message: '',
-    },
-  })
+	const form = useForm<z.infer<typeof contactSchema>>({
+		resolver: zodResolver(contactSchema),
+		defaultValues: {
+			name: '',
+			email: '',
+			message: '',
+		},
+	})
 
-  const { reset } = form
+	const { reset } = form
 
-  const onSubmit = async (values: z.infer<typeof contactSchema>) => {
-    console.log(values)
-    try {
-      await sendMail({
-        sendTo: 'bolado.angel@gmail.com',
-        subject: 'Envger - Contacto',
-        html: `<!doctype html>
+	const onSubmit = async (values: z.infer<typeof contactSchema>) => {
+		console.log(values)
+		try {
+			await sendMail({
+				sendTo: 'bolado.angel@gmail.com',
+				subject: 'Envger - Contacto',
+				html: `<!doctype html>
 <html lang="en">
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -191,7 +191,6 @@ export const ContactButton = () => {
             </div>
 
             <!-- END FOOTER -->
-            
 <!-- END CENTERED WHITE CONTAINER --></div>
         </td>
         <td style="font-family: Helvetica, sans-serif; font-size: 16px; vertical-align: top;" valign="top">&nbsp;</td>
@@ -199,95 +198,95 @@ export const ContactButton = () => {
     </table>
   </body>
 </html>`,
-      })
-      setOpen(false)
-      reset()
-      toast.success('Mensaje enviado correctamente')
-    } catch (error) {
-      toast.error('Se ha producido un error al enviar el mensaje')
-    }
-  }
+			})
+			setOpen(false)
+			reset()
+			toast.success('Mensaje enviado correctamente')
+		} catch (error) {
+			toast.error('Se ha producido un error al enviar el mensaje')
+		}
+	}
 
-  return (
-    <div className="fixed top-4 right-4 z-50">
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger>
-          <div className="flex size-12 items-center justify-center rounded-full bg-primary text-primary-foreground">
-            <MessageCircleCode className="size-6" />
-          </div>
-        </PopoverTrigger>
-        <PopoverContent collisionPadding={16} sideOffset={8}>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-8 !min-w-3xl"
-            >
-              <div className="flex flex-col gap-2">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Nombre</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Nombre" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input type="email" placeholder="Email" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="message"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Mensaje</FormLabel>
-                      <FormControl>
-                        <AutoSizeTextarea
-                          {...field}
-                          className="bg-transparent"
-                          placeholder="Mensaje"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <footer className="flex flex-row-reverse mt-4 gap-2">
-                <Button type="submit" size={'lg'} className="w-full">
-                  Enviar
-                </Button>
-                <Button
-                  type="button"
-                  size={'lg'}
-                  variant={'secondary'}
-                  className="w-full"
-                  onClick={() => {
-                    setOpen(false)
-                    reset()
-                  }}
-                >
-                  Cancelar
-                </Button>
-              </footer>
-            </form>
-          </Form>
-        </PopoverContent>
-      </Popover>
-    </div>
-  )
+	return (
+		<div className="fixed top-4 right-4 z-50">
+			<Popover open={open} onOpenChange={setOpen}>
+				<PopoverTrigger>
+					<div className="flex size-12 items-center justify-center rounded-full bg-primary text-primary-foreground">
+						<MessageCircleCode className="size-6" />
+					</div>
+				</PopoverTrigger>
+				<PopoverContent collisionPadding={16} sideOffset={8}>
+					<Form {...form}>
+						<form
+							onSubmit={form.handleSubmit(onSubmit)}
+							className="space-y-8 !min-w-3xl"
+						>
+							<div className="flex flex-col gap-2">
+								<FormField
+									control={form.control}
+									name="name"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Nombre</FormLabel>
+											<FormControl>
+												<Input placeholder="Nombre" {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name="email"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Email</FormLabel>
+											<FormControl>
+												<Input type="email" placeholder="Email" {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name="message"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Mensaje</FormLabel>
+											<FormControl>
+												<AutoSizeTextarea
+													{...field}
+													className="bg-transparent"
+													placeholder="Mensaje"
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</div>
+							<footer className="flex flex-row-reverse mt-4 gap-2">
+								<Button type="submit" size={'lg'} className="w-full">
+									Enviar
+								</Button>
+								<Button
+									type="button"
+									size={'lg'}
+									variant={'secondary'}
+									className="w-full"
+									onClick={() => {
+										setOpen(false)
+										reset()
+									}}
+								>
+									Cancelar
+								</Button>
+							</footer>
+						</form>
+					</Form>
+				</PopoverContent>
+			</Popover>
+		</div>
+	)
 }
