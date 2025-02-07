@@ -27,7 +27,7 @@ export default function DashboardLayout({
 						</Link>
 					</div>
 				</header>
-				<main className="flex flex-1 overflow-hidden p-3">{children}</main>
+				<main className="flex flex-1 overflow-hidden p-2">{children}</main>
 			</SidebarInset>
 		</SidebarProvider>
 	)

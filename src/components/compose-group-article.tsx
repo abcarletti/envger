@@ -49,7 +49,7 @@ export default function GroupArticle({
 
 	return (
 		<>
-			<article className="flex flex-col xl:flex-1 items-center min-h-24 bg-muted/30 border-[1px] border-muted rounded-lg py-2 xl:max-w-group">
+			<article className="flex flex-col flex-1 items-center min-h-24 bg-muted/30 border-[1px] border-muted rounded-lg py-2 xl:max-w-group">
 				<div className="flex w-full justify-between px-4">
 					<div className="flex flex-col gap-[4px] w-full">
 						<Label className="text-xl">{name}</Label>
@@ -140,7 +140,7 @@ export default function GroupArticle({
 						<NotesGroup groupId={group.id} showNote={showNote} />
 					</Suspense>
 				</div>
-				<footer className="flex gap-2 pt-4 text-primary justify-end items-end flex-1">
+				<footer className="flex gap-2 pt-4 text-primary justify-end items-end flex-1 w-full">
 					<UrlForm
 						groupId={group.id}
 						triggerText={'Añadir URL'}

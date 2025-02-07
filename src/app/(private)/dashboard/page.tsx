@@ -80,7 +80,7 @@ export default function DashboardPage() {
 										href={`/dashboard/${project.slug}`}
 										className="text-foreground w-full hover:text-foreground/70"
 									>
-										<div className="flex gap-4 min-w-fit items-center">
+										<div className="flex gap-4 items-center">
 											<Label className="text-md cursor-pointer min-w-[20%]">
 												{project.name}
 											</Label>
