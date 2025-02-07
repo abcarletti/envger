@@ -40,6 +40,7 @@ export const ContactButton = () => {
 	const { reset } = form
 
 	const onSubmit = async (values: z.infer<typeof contactSchema>) => {
+    console.log(values)
 		try {
 			await sendMail({
 				sendTo: 'bolado.angel@gmail.com',
