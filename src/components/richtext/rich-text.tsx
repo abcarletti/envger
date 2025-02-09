@@ -321,7 +321,10 @@ const RichTextEditor = ({ initialProjectNote }: RichTextEditorProps) => {
 					</Button>
 				</div>
 			</div>
-			<EditorContent editor={editor} className="editor-content w-full h-full" />
+			<EditorContent
+				editor={editor}
+				className="editor-content heightAvailable w-full h-full"
+			/>
 		</div>
 	)
 }

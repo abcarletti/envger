@@ -5,9 +5,6 @@
 }
 
 .editor-content {
-	height: 100%;
-	height: -moz-available;
-	height: -webkit-fill-available;
 	div {
 		padding: 7px 10px;
 		width: 100%;
