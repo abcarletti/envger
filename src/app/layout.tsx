@@ -1,10 +1,10 @@
-import type { Metadata } from 'next'
-import { IBM_Plex_Mono } from 'next/font/google'
-
 import { Toaster } from '@/components/ui/sonner'
 import { ProjectStoreProvider } from '@/providers/project-store-provider'
 import { ThemeProvider } from '@/providers/theme-provider'
+import type { Metadata } from 'next'
+import { IBM_Plex_Mono } from 'next/font/google'
 import QueryProvider from '../providers/tanstack-query'
+
 import './globals.css'
 
 const ibm = IBM_Plex_Mono({
@@ -13,7 +13,7 @@ const ibm = IBM_Plex_Mono({
 })
 
 export const metadata: Metadata = {
-	title: 'Envger 🔐',
+	title: 'Envger',
 	description:
 		'Aplicación para manejar los accesos a recursos para desarrolladores',
 }
