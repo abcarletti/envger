@@ -74,33 +74,17 @@ export default function ProjectGroups() {
 	useEffect(() => {
 		if (groups) {
 			const sections: React.JSX.Element[] = []
-			for (let i = 0; i < groups.length; i += 2) {
-				const firstElement: Group = groups[i]
-				const secondElement: Group = groups[i + 1]
+			for (let i = 0; i < groups.length; i += 1) {
+				const group: Group = groups[i]
 
-				if (firstElement) {
-					sections.push(
-						<div
-							key={`section-${firstElement.id}`}
-							className="flex flex-col xl:flex-row gap-2 w-full items-stretch "
-						>
-							<GroupArticle
-								key={`first-${firstElement.id}`}
-								group={firstElement}
-								handleEditGroup={() => handleEditGroup()}
-								handleDeleteGroup={() => handleDeleteGroup(firstElement.id)}
-							/>
-							{secondElement && (
-								<GroupArticle
-									key={`second-${secondElement.id}`}
-									group={secondElement}
-									handleEditGroup={() => handleEditGroup()}
-									handleDeleteGroup={() => handleDeleteGroup(secondElement.id)}
-								/>
-							)}
-						</div>,
-					)
-				}
+				sections.push(
+					<GroupArticle
+						key={`group-${group.id}`}
+						group={group}
+						handleEditGroup={() => handleEditGroup()}
+						handleDeleteGroup={() => handleDeleteGroup(group.id)}
+					/>,
+				)
 			}
 			setGroupsComposed(sections)
 		}

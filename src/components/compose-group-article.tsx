@@ -49,7 +49,7 @@ export default function GroupArticle({
 
 	return (
 		<>
-			<article className="flex flex-col flex-1 items-center bg-muted/30 border-[1px] border-muted rounded-lg py-2 xl:max-w-group min-h-max">
+			<article className="flex flex-col flex-1 items-center bg-muted/30 border-[1px] border-muted rounded-lg py-2 min-h-max">
 				<div className="flex w-full justify-between px-4">
 					<div className="flex flex-col gap-[4px] w-full">
 						<Label className="text-xl">{name}</Label>

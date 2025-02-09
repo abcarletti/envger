@@ -14,7 +14,6 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
-	SidebarTrigger,
 	useSidebar,
 } from '@/components/ui/sidebar'
 import { PROJECTS_SELECTOR_KEY } from '@/lib/constants'
@@ -76,12 +75,11 @@ export function ProjectSwitcher() {
 				<SidebarMenuButton
 					asChild
 					size="lg"
-					className={cn({
-						hidden: !open,
-						'hidden md:block': open,
+					className={cn('hidden md:block', {
+						'bg-background': !open,
 					})}
 				>
-					<Link href="/dashboard" className="font-semibold">
+					<Link href="/dashboard" className="font-semibold w-full">
 						{!open && (
 							<Avatar className="flex items-center justify-center size-8 rounded-lg text-primary">
 								<Code className="size-5" />
@@ -98,7 +96,6 @@ export function ProjectSwitcher() {
 						)}
 					</Link>
 				</SidebarMenuButton>
-				<SidebarTrigger />
 			</div>
 			{/* <Separator className="my-2" /> */}
 			<SidebarMenuItem>
