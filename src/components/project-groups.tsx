@@ -105,13 +105,13 @@ export default function ProjectGroups() {
 	return (
 		<>
 			{!isLoadingGroups && groupsComposed.length > 0 && (
-				<div className="grid grid-cols-1 xl:grid-cols-2 gap-2 w-full">
+				<div className="grid grid-cols-1 xl:grid-cols-2 gap-2 w-full p-2">
 					{groupsComposed}
 				</div>
 			)}
 			{!isLoadingGroups && groupsComposed.length <= 0 && (
-				<section className="flex flex-1 flex-col gap-8 items-center justify-center w-full">
-					<div className="flex flex-col items-center gap-4 flex-1 h-full justify-center">
+				<section className="flex flex-1 flex-col gap-8 items-center justify-center w-full h-full heightAvailable">
+					<div className="flex flex-col items-center gap-4 flex-1 h-full justify-center heightAvailable">
 						<Boxes className="size-20 text-primary" />
 						<Label className="text-2xl uppercase">No hay grupos</Label>
 						<AddGroupButton />
