@@ -19,11 +19,7 @@ const NotasPage = () => {
 		project ? true : false,
 	)
 
-	return (
-		<div className="flex flex-col gap-2 w-full flex-1">
-			{!isLoading && <RichTextEditor initialProjectNote={note} />}
-		</div>
-	)
+	return <>{!isLoading && <RichTextEditor initialProjectNote={note} />}</>
 }
 
 export default NotasPage

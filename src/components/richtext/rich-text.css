@@ -1,4 +1,13 @@
+.heightAvailable {
+	height: 100%;
+	height: -moz-available;
+	height: -webkit-fill-available;
+}
+
 .editor-content {
+	height: 100%;
+	height: -moz-available;
+	height: -webkit-fill-available;
 	div {
 		padding: 7px 10px;
 		width: 100%;
@@ -7,7 +16,6 @@
 		overflow-y: auto;
 		flex: 1 1 0%;
 		max-height: 100%;
-		position: absolute;
 		scrollbar-width: thin;
 		border: 1px solid hsl(var(--primary));
 		border-radius: var(--radius);

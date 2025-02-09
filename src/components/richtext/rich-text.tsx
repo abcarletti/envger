@@ -95,7 +95,7 @@ const RichTextEditor = ({ initialProjectNote }: RichTextEditorProps) => {
 	}
 
 	return (
-		<div className="flex flex-col w-full flex-1 mt-1">
+		<div className="flex flex-col w-full heightAvailable p-2">
 			<div className="flex gap-2 pb-2 w-full flex-wrap">
 				<div>
 					<Button
@@ -321,10 +321,7 @@ const RichTextEditor = ({ initialProjectNote }: RichTextEditorProps) => {
 					</Button>
 				</div>
 			</div>
-			<EditorContent
-				editor={editor}
-				className="editor-content relative overflow-hidden flex w-full flex-1 rounded-lg text-sm"
-			/>
+			<EditorContent editor={editor} className="editor-content w-full h-full" />
 		</div>
 	)
 }
