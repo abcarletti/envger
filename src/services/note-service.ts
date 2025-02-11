@@ -48,7 +48,7 @@ export const updateNoteProject = async (
 	projectId: string | undefined,
 	note: any,
 ): Promise<void> => {
-	if (!projectId) return
+	if (!projectId || !note) return
 	await prisma.projectNote.upsert({
 		where: {
 			projectId,

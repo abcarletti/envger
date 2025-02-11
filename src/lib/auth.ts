@@ -76,7 +76,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 		jwt: async ({ token, user, account, profile, trigger }: any) => {
 			if (trigger === 'signIn') {
 				if (account?.provider === 'github') {
-					console.log('profile: ', profile)
 					let user = await prisma.user.findFirst({
 						where: {
 							username: <string>profile?.email,

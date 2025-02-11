@@ -2,20 +2,14 @@ import transporter from '@/utils/email-sender'
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
-	console.log(request)
-
-	const { email, name, template, subject } = await request.json()
+	const { email, context, template, subject } = await request.json()
 
 	const mailOptions = {
 		from: process.env.SITE_MAIL_SENDER,
 		to: email,
 		subject,
 		template, // Nombre de la plantilla
-		context: {
-			name, // Variables para la plantilla
-			baseUrl: process.env.AUTH_TRUST_HOST,
-			year: new Date().getFullYear(),
-		},
+		context,
 	}
 
 	const res = NextResponse.json(

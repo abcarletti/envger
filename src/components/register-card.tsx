@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { useToast } from '@/hooks/use-toast'
-import { EmailPathTemplates } from '@/models/email'
 import { registerSchema } from '@/schemas/register'
+import { sendRegisterEmail } from '@/services/email-service'
 import { handleGitHubSignIn } from '@/services/server-actions'
 import { createUser } from '@/services/user-service'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -60,15 +60,7 @@ export default function RegisterCard({
 				type: 'success',
 			})
 			push('/login')
-			await fetch('/api/send-email', {
-				method: 'POST',
-				body: JSON.stringify({
-					email: values.email,
-					name: values.name,
-					template: EmailPathTemplates.WELCOME,
-					subject: 'Bienvenido a Envger 🔐',
-				}),
-			})
+			await sendRegisterEmail(values)
 		} catch (error) {
 			handleError(
 				'Se ha producido un error al crear el usuario. Inténtelo con otro email.',
