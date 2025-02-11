@@ -11,7 +11,7 @@ import { Boxes } from 'lucide-react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import AddGroupButton from './add-group-button'
-import GroupArticle from './compose-group-article'
+import GroupArticle from './group-article'
 import { Label } from './ui/label'
 
 export default function ProjectGroups() {

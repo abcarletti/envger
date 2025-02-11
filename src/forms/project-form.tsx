@@ -30,7 +30,7 @@ const ProjectForm = ({
 	modal,
 	dialogOpen,
 }: {
-	project?: Project
+	project?: Project | null
 	modal?: boolean
 	cancelButton?: React.ReactNode
 	dialogOpen: (open: boolean) => void
