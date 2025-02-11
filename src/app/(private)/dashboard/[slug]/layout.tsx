@@ -53,6 +53,7 @@ export default function SlugLayout({
 	async function handleFavorite() {
 		setFavoriteProject(slug, !projectStore?.favorite)
 		await updateProjectContextBySlug(slug)
+		invalidateProjectsQuery()
 		setMessage({
 			message: `El proyecto se ha ${!projectStore?.favorite ? 'marcado' : 'desmarcado'} como favorito`,
 			type: 'success',
